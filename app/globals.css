@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-script: 'Great Vibes', cursive;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-arabic: 'Amiri', serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #151718;
+  color: #2c2724;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1e2022;
+}
+::-webkit-scrollbar-thumb {
+  background: #c5a880;
+  border-radius: 3px;
+}
+
+/* Glassmorphism helpers */
+.glass-dark {
+  background: rgba(26, 28, 30, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(197, 168, 128, 0.25);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(197, 168, 128, 0.3);
+}
+
+/* Luxury Cards Styling with High Contrast & Depth */
+.luxury-card-dark {
+  background: linear-gradient(160deg, #282b2e 0%, #1f2124 100%);
+  border: 1px solid rgba(197, 168, 128, 0.28);
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.55),
+              0 0 0 1px rgba(255, 255, 255, 0.06),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.luxury-card-light {
+  background: #ffffff;
+  border: 1px solid rgba(197, 168, 128, 0.35);
+  box-shadow: 0 14px 34px -4px rgba(44, 39, 36, 0.08),
+              0 4px 12px -2px rgba(44, 39, 36, 0.04),
+              0 0 0 1px rgba(197, 168, 128, 0.12);
+}
+
+/* Double Golden Border Accent */
+.double-gold-border {
+  position: relative;
+}
+.double-gold-border::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px dashed rgba(197, 168, 128, 0.35);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Arch Shape for Wedding Photos */
+.arch-photo-frame {
+  border-top-left-radius: 90px;
+  border-top-right-radius: 90px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+/* Subtle Shimmer & Particle Floating Animations */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 3s infinite;
+}
+
+@keyframes float-particle {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-24px) translateX(12px);
+    opacity: 0.8;
+  }
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, #e6c89c 0%, rgba(197, 168, 128, 0) 70%);
+}
+
+.gold-glow {
+  text-shadow: 0 0 16px rgba(197, 168, 128, 0.45);
+}
