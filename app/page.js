@@ -10,7 +10,6 @@ import CoupleSection from '@/components/CoupleSection';
 import StorySection from '@/components/StorySection';
 import CountdownSection from '@/components/CountdownSection';
 import EventsSection from '@/components/EventsSection';
-import DressCodeSection from '@/components/DressCodeSection';
 import GallerySection from '@/components/GallerySection';
 import GiftSection from '@/components/GiftSection';
 import PrayerSection from '@/components/PrayerSection';
@@ -75,9 +74,6 @@ export default function WeddingPage() {
 
         {/* 7. Save The Date (Light Cream) */}
         <EventsSection />
-
-        {/* 8. Dress Code */}
-        <DressCodeSection />
 
         {/* 9. Gallery Masonry Grid & Lightbox */}
         <GallerySection />
