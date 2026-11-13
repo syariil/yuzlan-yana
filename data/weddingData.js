@@ -8,14 +8,14 @@ export const weddingData = {
     fullName: " Apt. Safiana, S.Farm",
     nickname: "Yana",
     parents: "Anak ke-4 dari 4 bersaudara dari Bapak Biyzi & Ibu Sarlia",
-    instagram: "https://instagram.com",
+    instagram: "https://www.instagram.com/safiana.27",
     photo: "/images/Yana.webp",
   },
   groom: {
     fullName: "Ld. Ahmad Yuzlan Sarifudin",
     nickname: "Yuzlan",
     parents: "Anak pertama dari 2 bersaudara dari Bapak La Ode Sarifudin & Ibu Wa Ode Darnia",
-    instagram: "https://instagram.com",
+    instagram: "https://www.instagram.com/odealan99",
     photo: "/images/Yuzlan.webp",
   },
 
