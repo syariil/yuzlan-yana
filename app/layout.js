@@ -13,7 +13,7 @@ export const metadata = {
   title: `The Wedding of ${weddingData.bride.nickname} & ${weddingData.groom.nickname}`,
   description: `Undangan Pernikahan ${weddingData.bride.fullName} & ${weddingData.groom.fullName} - ${weddingData.weddingDateDisplay}`,
   icons: {
-    icon: '/favicon.ico',
+    icon: '/images/cover.webp',
   },
   openGraph: {
     title: `The Wedding of ${weddingData.bride.nickname} & ${weddingData.groom.nickname}`,
