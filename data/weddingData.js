@@ -65,7 +65,7 @@ export const weddingData = {
     {
       title: "PERNIKAHAN",
       date: "08 DESEMBER 2026",
-      description: "Pada tanggal 08 Desember 2026, saya dan Yana insya Allah resmi menjadi sepasang suami istri. Dengan semua doa restu dari keluarga dan teman-teman, kami siap untuk menempuh hidup bersama dan menjalankan ibadah paling indah ini.",
+      description: "Pada tanggal 08 Desember 2026, Yuzlan dan Yana insya Allah resmi menjadi sepasang suami istri. Dengan semua doa restu dari keluarga dan teman-teman, kami siap untuk menempuh hidup bersama dan menjalankan ibadah paling indah ini.",
     },
   ],
 
