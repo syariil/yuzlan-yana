@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import LoadingScreen from '@/components/LoadingScreen';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
 import CoverScreen from '@/components/CoverScreen';
 import FloatingControls from '@/components/FloatingControls';
+import FallingPetals from '@/components/FallingPetals';
 import SectionCurve from '@/components/SectionCurve';
 import HeroSection from '@/components/HeroSection';
 import CoupleSection from '@/components/CoupleSection';
@@ -17,11 +19,12 @@ import RsvpSection from '@/components/RsvpSection';
 import FooterSection from '@/components/FooterSection';
 
 export default function WeddingPage() {
+  const [isLoading, setIsLoading] = useState(true);
   const [isInvitationOpen, setIsInvitationOpen] = useState(false);
 
-  // Lock scroll before invitation is opened
+  // Lock scroll saat loading ATAU sebelum undangan dibuka
   useEffect(() => {
-    if (!isInvitationOpen) {
+    if (isLoading || !isInvitationOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -29,7 +32,11 @@ export default function WeddingPage() {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isInvitationOpen]);
+  }, [isLoading, isInvitationOpen]);
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
 
   const handleOpenInvitation = () => {
     setIsInvitationOpen(true);
@@ -37,6 +44,11 @@ export default function WeddingPage() {
 
   return (
     <main className="min-h-screen bg-wedding-darker text-stone-900 overflow-x-hidden">
+      {/* 0. Preloader Screen — Mendownload semua data & foto terlebih dahulu */}
+      {isLoading && (
+        <LoadingScreen onComplete={handleLoadingComplete} />
+      )}
+
       {/* 1. Cover / Splash Screen (Scroll Lock until opened) */}
       <CoverScreen
         isOpen={isInvitationOpen}
@@ -46,57 +58,60 @@ export default function WeddingPage() {
       {/* 2. Floating Audio Player & Sticky Bottom Dock */}
       <FloatingControls isInvitationOpen={isInvitationOpen} />
 
-      {/* Scroll Progress Bar at Top */}
+      {/* 3. Scroll Progress Bar at Top */}
       {isInvitationOpen && <ScrollProgressBar />}
+
+      {/* 4. Falling Petals — tampil setelah undangan dibuka (ringan & anggun) */}
+      <FallingPetals count={10} active={isInvitationOpen} />
 
       {/* Main Content (Mobile-First Container) */}
       <div className="w-full max-w-md mx-auto shadow-2xl relative bg-wedding-darker min-h-screen">
-        {/* 3. Hero Section (Dark) */}
+        {/* Hero Section (Dark) */}
         <HeroSection />
 
         {/* Curve: Dark -> Light */}
         <SectionCurve to="light" />
 
-        {/* 4. Couple Section (Light Cream) */}
+        {/* Couple Section (Light Cream) */}
         <CoupleSection />
 
         {/* Curve: Light -> Dark */}
         <SectionCurve to="dark" />
 
-        {/* 5. Holy Verse & Our Story (Dark) */}
+        {/* Holy Verse & Our Story (Dark) */}
         <StorySection />
 
-        {/* 6. Real-time Countdown Timer & Calendar (Dark) */}
+        {/* Real-time Countdown Timer & Calendar (Dark) */}
         <CountdownSection />
 
         {/* Curve: Dark -> Light */}
         <SectionCurve to="light" />
 
-        {/* 7. Save The Date (Light Cream) */}
+        {/* Save The Date (Light Cream) */}
         <EventsSection />
 
-        {/* 9. Gallery Masonry Grid & Lightbox */}
+        {/* Gallery Masonry Grid & Lightbox */}
         <GallerySection />
 
-        {/* 10. Wedding Gift (Amplop Digital & Kado Fisik) */}
+        {/* Wedding Gift */}
         <GiftSection />
 
         {/* Curve: Light -> Dark */}
         <SectionCurve to="dark" />
 
-        {/* 11. Doa Pengantin & Turut Mengundang (Dark) */}
+        {/* Doa Pengantin & Turut Mengundang (Dark) */}
         <PrayerSection />
 
         {/* Curve: Dark -> Light */}
         <SectionCurve to="light" />
 
-        {/* 12. RSVP & Wishes (Light Cream) */}
+        {/* RSVP & Wishes (Light Cream) */}
         <RsvpSection />
 
         {/* Curve: Light -> Dark */}
         <SectionCurve to="dark" />
 
-        {/* 13. Footer Section (Dark) */}
+        {/* Footer Section (Dark) */}
         <FooterSection />
       </div>
     </main>

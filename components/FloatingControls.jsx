@@ -34,24 +34,31 @@ export default function FloatingControls({ isInvitationOpen }) {
     }
   }, [isInvitationOpen]);
 
-  // ScrollSpy: Otomatis mendeteksi section mana yang aktif saat di-scroll
+  // ScrollSpy: Otomatis mendeteksi section mana yang aktif saat di-scroll (dioptimalkan dengan requestAnimationFrame)
   useEffect(() => {
     if (!isInvitationOpen) return;
 
     const sections = ['hero', 'couple', 'events', 'gift', 'gallery', 'rsvp'];
+    let isTicking = false;
 
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight * 0.35;
+      if (!isTicking) {
+        window.requestAnimationFrame(() => {
+          const scrollPosition = window.scrollY + window.innerHeight * 0.35;
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
-        if (el) {
-          const top = el.offsetTop;
-          if (scrollPosition >= top) {
-            setActiveSection(sections[i]);
-            break;
+          for (let i = sections.length - 1; i >= 0; i--) {
+            const el = document.getElementById(sections[i]);
+            if (el) {
+              const top = el.offsetTop;
+              if (scrollPosition >= top) {
+                setActiveSection(sections[i]);
+                break;
+              }
+            }
           }
-        }
+          isTicking = false;
+        });
+        isTicking = true;
       }
     };
 

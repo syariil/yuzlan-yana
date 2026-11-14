@@ -222,7 +222,7 @@ export default function RsvpSection() {
         <motion.img
           initial={{ scale: 1.08 }}
           whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 1.5 }}
           src={rsvpPhoto}
           alt="RSVP Couple"

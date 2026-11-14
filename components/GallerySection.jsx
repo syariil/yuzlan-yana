@@ -34,7 +34,7 @@ export default function GallerySection() {
         <motion.img
           initial={{ scale: 1.08 }}
           whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 1.6 }}
           src={quotePhoto}
           alt="Quote Banner"

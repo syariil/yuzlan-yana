@@ -35,36 +35,36 @@ body {
   border-radius: 3px;
 }
 
-/* Glassmorphism helpers */
+/* Glassmorphism helpers - dioptimalkan untuk performa tinggi */
 .glass-dark {
-  background: rgba(26, 28, 30, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(26, 28, 30, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(197, 168, 128, 0.25);
+  transform: translateZ(0);
 }
 
 .glass-light {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(197, 168, 128, 0.3);
+  transform: translateZ(0);
 }
 
-/* Luxury Cards Styling with High Contrast & Depth */
+/* Luxury Cards Styling with GPU Acceleration */
 .luxury-card-dark {
   background: linear-gradient(160deg, #282b2e 0%, #1f2124 100%);
   border: 1px solid rgba(197, 168, 128, 0.28);
-  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.55),
-              0 0 0 1px rgba(255, 255, 255, 0.06),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 30px -6px rgba(0, 0, 0, 0.45);
+  transform: translateZ(0);
 }
 
 .luxury-card-light {
   background: #ffffff;
   border: 1px solid rgba(197, 168, 128, 0.35);
-  box-shadow: 0 14px 34px -4px rgba(44, 39, 36, 0.08),
-              0 4px 12px -2px rgba(44, 39, 36, 0.04),
-              0 0 0 1px rgba(197, 168, 128, 0.12);
+  box-shadow: 0 10px 24px -4px rgba(44, 39, 36, 0.08);
+  transform: translateZ(0);
 }
 
 /* Double Golden Border Accent */
@@ -78,6 +78,7 @@ body {
   border: 1px dashed rgba(197, 168, 128, 0.35);
   border-radius: inherit;
   pointer-events: none;
+  z-index: 0;
 }
 
 /* Arch Shape for Wedding Photos */
@@ -88,7 +89,9 @@ body {
   border-bottom-right-radius: 20px;
 }
 
-/* Subtle Shimmer & Particle Floating Animations */
+/* ============================================
+   SHIMMER ANIMATION
+   ============================================ */
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(200%); }
@@ -115,14 +118,24 @@ body {
   animation: shimmer 3s infinite;
 }
 
+/* ============================================
+   GOLD GLOW TEXT (Ringan & Tajam)
+   ============================================ */
+.gold-glow {
+  text-shadow: 0 0 16px rgba(197, 168, 128, 0.45);
+}
+
+/* ============================================
+   AMBIENT PARTICLES
+   ============================================ */
 @keyframes float-particle {
   0%, 100% {
-    transform: translateY(0px) translateX(0px);
+    transform: translateY(0px) translateX(0px) scale(1);
     opacity: 0.2;
   }
   50% {
-    transform: translateY(-24px) translateX(12px);
-    opacity: 0.8;
+    transform: translateY(-28px) translateX(14px) scale(1.2);
+    opacity: 0.9;
   }
 }
 
@@ -133,6 +146,169 @@ body {
   background: radial-gradient(circle, #e6c89c 0%, rgba(197, 168, 128, 0) 70%);
 }
 
-.gold-glow {
-  text-shadow: 0 0 16px rgba(197, 168, 128, 0.45);
+/* ============================================
+   FALLING PETALS EFFECT (GPU-Accelerated)
+   ============================================ */
+.petals-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
+  contain: strict;
+}
+
+/* SVG Petal element - zero layout reflow */
+.petal {
+  position: absolute;
+  top: -60px;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Fall animations using pure transform (GPU only) */
+@keyframes petal-fall-1 {
+  0%   { transform: translate3d(0, -60px, 0)   rotate(0deg)   scale(1);   opacity: 0; }
+  8%   { opacity: 0.9; }
+  85%  { opacity: 0.7; }
+  100% { transform: translate3d(60px, 110vh, 0) rotate(540deg) scale(0.7); opacity: 0; }
+}
+@keyframes petal-fall-2 {
+  0%   { transform: translate3d(0, -60px, 0)   rotate(30deg)  scale(0.9); opacity: 0; }
+  8%   { opacity: 0.85; }
+  85%  { opacity: 0.6; }
+  100% { transform: translate3d(-50px, 110vh, 0) rotate(-480deg) scale(0.6); opacity: 0; }
+}
+@keyframes petal-fall-3 {
+  0%   { transform: translate3d(0, -60px, 0)   rotate(-20deg) scale(1.1); opacity: 0; }
+  8%   { opacity: 0.8; }
+  85%  { opacity: 0.5; }
+  100% { transform: translate3d(40px, 110vh, 0)  rotate(600deg) scale(0.5); opacity: 0; }
+}
+@keyframes petal-fall-4 {
+  0%   { transform: translate3d(0, -60px, 0)   rotate(60deg)  scale(0.85); opacity: 0; }
+  8%   { opacity: 0.9; }
+  85%  { opacity: 0.6; }
+  100% { transform: translate3d(-60px, 110vh, 0) rotate(-360deg) scale(0.7); opacity: 0; }
+}
+@keyframes petal-fall-5 {
+  0%   { transform: translate3d(0, -60px, 0)   rotate(-40deg) scale(1);   opacity: 0; }
+  8%   { opacity: 0.85; }
+  85%  { opacity: 0.5; }
+  100% { transform: translate3d(50px, 110vh, 0)  rotate(420deg) scale(0.8); opacity: 0; }
+}
+
+/* ============================================
+   SECTION ENTRANCE ANIMATIONS (Enhanced)
+   ============================================ */
+@keyframes slide-up-fade {
+  0%   { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0px); }
+}
+
+@keyframes slide-in-left {
+  0%   { opacity: 0; transform: translateX(-30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-right {
+  0%   { opacity: 0; transform: translateX(30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  0%   { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0); }
+  50%       { box-shadow: 0 0 0 8px rgba(197, 168, 128, 0.15); }
+}
+
+.animate-pulse-gold {
+  animation: pulse-gold 2.5s ease-in-out infinite;
+}
+
+/* ============================================
+   HEARTBEAT ANIMATION (For love elements)
+   ============================================ */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.15); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.1); }
+  70%       { transform: scale(1); }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.8s ease-in-out infinite;
+}
+
+/* ============================================
+   TWINKLING STARS (for dark sections)
+   ============================================ */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; transform: scale(0.8); }
+  50%       { opacity: 1; transform: scale(1.2); }
+}
+
+.twinkle-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #e6c89c;
+  pointer-events: none;
+  animation: twinkle ease-in-out infinite;
+}
+
+/* ============================================
+   SPINNING SLOW (music disc / rings)
+   ============================================ */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* ============================================
+   FADE-IN UP (toast / notification)
+   ============================================ */
+@keyframes fade-in-up {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in-up 0.4s ease-out forwards;
+}
+
+/* ============================================
+   WAVING (organic ambient)
+   ============================================ */
+@keyframes wave-gentle {
+  0%, 100% { transform: rotate(-3deg) scale(1); }
+  50%       { transform: rotate(3deg) scale(1.05); }
+}
+
+.animate-wave {
+  animation: wave-gentle 4s ease-in-out infinite;
+}
+
+/* ============================================
+   GRADIENT BORDER GLOW (highlight on cards)
+   ============================================ */
+.card-gold-glow:hover {
+  box-shadow: 0 0 0 1px rgba(197, 168, 128, 0.6),
+              0 20px 40px -8px rgba(0, 0, 0, 0.3),
+              0 0 24px rgba(197, 168, 128, 0.15);
+  transition: box-shadow 0.4s ease;
 }

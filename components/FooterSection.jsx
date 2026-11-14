@@ -47,38 +47,6 @@ export default function FooterSection() {
             {bride.nickname} & {groom.nickname}
           </h2>
 
-          <p className="text-xs sm:text-sm text-gray-300 font-light leading-relaxed max-w-xs mx-auto mb-10 px-2">
-            Suatu kebahagiaan & kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i
-            berkenan hadir dan memberikan do'a restu kepada kami.
-          </p>
-
-          {/* Social Share Buttons */}
-          <div className="flex items-center justify-center gap-3 mb-10">
-            <button
-              onClick={shareToWhatsApp}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-all shadow-md active:scale-95"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>Share WhatsApp</span>
-            </button>
-
-            <button
-              onClick={copyLink}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-all border border-wedding-gold/40 active:scale-95 shadow-md"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-4 h-4 text-emerald-400" />
-                  <span>Tersalin!</span>
-                </>
-              ) : (
-                <>
-                  <Share2 className="w-4 h-4 text-wedding-gold" />
-                  <span>Salin Link</span>
-                </>
-              )}
-            </button>
-          </div>
 
           {/* Now Playing Footer Pill */}
           <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full glass-dark text-xs text-gray-300 border border-wedding-gold/30 shadow-md mb-8">
@@ -99,8 +67,8 @@ export default function FooterSection() {
             </button>
           </div>
 
-          <p className="text-[10px] text-gray-500 mt-8 tracking-widest uppercase">
-            © {new Date().getFullYear()} {bride.nickname} & {groom.nickname} Wedding Invitation
+          <p className="text-[12px] text-gray-500 mt-8 tracking-widest">
+            <a href='https://www.instagram.com/@syahrii_l' target='_blank' rel='noopener noreferrer'>© {new Date().getFullYear()} Develop With ❤️ By <a href='https://www.instagram.com/syahrii_l' target='_blank' rel='noopener noreferrer'>@syahrii_l</a></a>
           </p>
         </AnimateReveal>
       </div>
