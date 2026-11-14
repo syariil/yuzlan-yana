@@ -51,7 +51,7 @@ export default function CountdownSection() {
       `Akad & Resepsi Pernikahan ${weddingData.bride.fullName} dan ${weddingData.groom.fullName}`
     );
     const location = encodeURIComponent(weddingData.events[0]?.address || 'Bogor');
-    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=20261231T010000Z/20261231T070000Z`;
+    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=20261208T080000Z/20261208T120000Z`;
 
     window.open(calendarUrl, '_blank');
   };
