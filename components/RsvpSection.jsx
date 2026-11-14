@@ -1,25 +1,24 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 import {
   Heart,
   Send,
   CheckCircle2,
   XCircle,
   HelpCircle,
-  Sparkles,
-  ChevronDown,
-  ChevronUp,
-  MessageCircle,
+  Clock,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { weddingData } from '@/data/weddingData';
+import { CornerFloral } from './FloralOrnaments';
 import AnimateReveal from './AnimateReveal';
 
+const ITEMS_PER_PAGE = 4;
+
 export default function RsvpSection() {
-  const { rsvpPhoto } = weddingData;
   const formRef = useRef(null);
 
   const [wishes, setWishes] = useState([]);
@@ -27,9 +26,8 @@ export default function RsvpSection() {
   const [submitting, setSubmitting] = useState(false);
   const [likedMap, setLikedMap] = useState({});
 
-  // Pagination & Filter State
-  const [visibleCount, setVisibleCount] = useState(3);
-  const [activeFilter, setActiveFilter] = useState('all');
+  // Numbered Pagination State (matching Video 00:56 - 00:57)
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Form State
   const [name, setName] = useState('');
@@ -38,7 +36,6 @@ export default function RsvpSection() {
   const [message, setMessage] = useState('');
   const [formFeedback, setFormFeedback] = useState(null);
 
-  // Auto-fill nama dari query param ?to=
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -47,7 +44,6 @@ export default function RsvpSection() {
     }
   }, []);
 
-  // Fetch data awal
   useEffect(() => {
     const fetchWishes = async () => {
       try {
@@ -65,7 +61,6 @@ export default function RsvpSection() {
 
     fetchWishes();
 
-    // Supabase Realtime Subscription jika live database aktif
     if (isSupabaseConfigured && supabase) {
       const channel = supabase
         .channel('realtime_rsvps')
@@ -95,7 +90,6 @@ export default function RsvpSection() {
     }
   }, []);
 
-  // Submit RSVP
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim() || !message.trim()) {
@@ -124,26 +118,25 @@ export default function RsvpSection() {
       const json = await res.json();
 
       if (json.success) {
-        // Confetti Celebration
         try {
           confetti({
-            particleCount: 80,
+            particleCount: 70,
             spread: 60,
             origin: { y: 0.7 },
           });
-        } catch (e) {
+        } catch (err) {
           // ignore
         }
 
-        // Jika bukan live supabase, update local state
         if (!json.isLive) {
           setWishes((prev) => [json.data, ...prev]);
         }
 
         setMessage('');
+        setCurrentPage(1);
         setFormFeedback({
           type: 'success',
-          text: 'Terima kasih atas konfirmasi dan ucapan doanya! 🤍',
+          text: 'Terima kasih atas konfirmasi dan ucapan doanya!',
         });
       } else {
         throw new Error(json.error || 'Gagal mengirim ucapan');
@@ -158,7 +151,6 @@ export default function RsvpSection() {
     }
   };
 
-  // Like comment
   const handleLike = async (id) => {
     if (likedMap[id]) return;
 
@@ -174,406 +166,269 @@ export default function RsvpSection() {
     }
   };
 
-  const addSticker = (sticker) => {
-    setMessage((prev) => (prev ? `${prev} ${sticker}` : sticker));
-  };
-
-  const replyTo = (guestAuthor) => {
-    setMessage((prev) => `@${guestAuthor} `);
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  // Helper Initials
-  const getInitials = (guestName) => {
-    if (!guestName) return 'TU';
-    const parts = guestName.trim().split(' ');
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return guestName.slice(0, 2).toUpperCase();
-  };
-
-  // Filtered & Paginated Wishes
-  const filteredWishes = wishes.filter((w) => {
-    if (activeFilter === 'all') return true;
-    return w.attendance === activeFilter;
-  });
-
-  const displayedWishes = filteredWishes.slice(0, visibleCount);
-
-  const hadirCount = wishes.filter((w) => w.attendance === 'hadir').length;
-  const raguCount = wishes.filter((w) => w.attendance === 'ragu').length;
-  const tidakHadirCount = wishes.filter((w) => w.attendance === 'tidak_hadir').length;
-
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 3);
-  };
-
-  const handleShowLess = () => {
-    setVisibleCount(3);
-  };
+  const totalPages = Math.max(1, Math.ceil(wishes.length / ITEMS_PER_PAGE));
+  const paginatedWishes = wishes.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
-    <section id="rsvp" className="bg-wedding-cream text-stone-800 pb-28">
-      {/* Photo Header */}
-      <div className="relative w-full h-80 sm:h-96 overflow-hidden">
-        <motion.img
-          initial={{ scale: 1.08 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: false }}
-          transition={{ duration: 1.5 }}
-          src={rsvpPhoto}
-          alt="RSVP Couple"
-          className="w-full h-full object-cover filter brightness-[0.72]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20 flex flex-col items-center justify-end pb-8 px-6 text-center text-white">
-          <AnimateReveal y={25} duration={0.7}>
-            <h2 className="font-serif text-3xl font-bold tracking-wide">
-              RSVP & Wishes
-            </h2>
-            <p className="text-xs sm:text-sm text-gray-200 font-light mt-1">
-              Ucapan Selamat, Doa & Konfirmasi Kehadiran
-            </p>
-          </AnimateReveal>
-        </div>
-      </div>
+    <section
+      id="rsvp"
+      className="py-14 px-5 royal-blue-bg text-stone-800 relative z-10 overflow-hidden"
+    >
+      <div className="max-w-md mx-auto">
+        <AnimateReveal y={35} duration={0.75} scale={0.97}>
+          {/* White Rounded Card inside Dusty Blue Section (Video 00:55 - 00:57) */}
+          <div className="royal-white-card rounded-[38px] p-6 sm:p-8 relative overflow-hidden">
+            <CornerFloral position="top-left" />
+            <CornerFloral position="top-right" />
+            <CornerFloral position="bottom-left" />
+            <CornerFloral position="bottom-right" />
 
-      <div className="max-w-md mx-auto px-6 -mt-4 relative z-10">
-        {/* Total Wishes Badge */}
-        <AnimateReveal y={20} duration={0.6} className="text-center mb-6">
-          <span className="inline-block px-5 py-2 rounded-full bg-white shadow-md border border-wedding-gold/30 text-xs font-semibold text-stone-800 tracking-wider">
-            {wishes.length} Doa & Ucapan Masuk
-          </span>
-        </AnimateReveal>
-
-        {/* Form RSVP */}
-        <AnimateReveal y={35} duration={0.75} scale={0.97} className="mb-10">
-          <form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            className="luxury-card-light double-gold-border rounded-[32px] p-6 sm:p-7 shadow-lg"
-          >
-            {/* Input Nama */}
-            <div className="mb-4">
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                Nama Anda
-              </label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Nama Lengkap"
-                className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-stone-50 border border-stone-200 focus:outline-none focus:ring-1 focus:ring-wedding-gold text-stone-800"
-              />
-            </div>
-
-            {/* Konfirmasi Kehadiran */}
-            <div className="mb-4">
-              <label className="block text-xs font-semibold text-stone-700 mb-2">
-                Konfirmasi Kehadiran
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setAttendance('hadir')}
-                  className={`py-2.5 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all border ${
-                    attendance === 'hadir'
-                      ? 'bg-stone-900 text-white border-stone-900 shadow-sm'
-                      : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
-                  }`}
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Hadir</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setAttendance('ragu')}
-                  className={`py-2.5 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all border ${
-                    attendance === 'ragu'
-                      ? 'bg-stone-900 text-white border-stone-900 shadow-sm'
-                      : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
-                  }`}
-                >
-                  <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Masih Ragu</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setAttendance('tidak_hadir')}
-                  className={`py-2.5 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all border ${
-                    attendance === 'tidak_hadir'
-                      ? 'bg-stone-900 text-white border-stone-900 shadow-sm'
-                      : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
-                  }`}
-                >
-                  <XCircle className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Tidak Hadir</span>
-                </button>
+            <div className="relative z-10">
+              {/* Header */}
+              <div className="text-center mb-6">
+                <h2 className="font-script text-4xl sm:text-5xl text-wedding-gold-dark mb-1">
+                  Ucapan &amp; Doa
+                </h2>
+                <p className="font-sans text-xs sm:text-sm text-stone-600">
+                  Berikan ucapan harapan dan doa kepada kedua mempelai
+                </p>
               </div>
-            </div>
 
-            {/* Jumlah Tamu (Jika hadir) */}
-            {attendance === 'hadir' && (
-              <div className="mb-4">
-                <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                  Jumlah Orang
-                </label>
-                <select
-                  value={guestCount}
-                  onChange={(e) => setGuestCount(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm bg-stone-50 border border-stone-200 focus:outline-none focus:ring-1 focus:ring-wedding-gold text-stone-800"
-                >
-                  <option value={1}>1 Orang</option>
-                  <option value={2}>2 Orang</option>
-                  <option value={3}>3 Orang</option>
-                  <option value={4}>4 Orang</option>
-                </select>
-              </div>
-            )}
+              {/* RSVP Form */}
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-3.5 mb-7">
+                <div>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Nama"
+                    className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm bg-white border border-stone-200 focus:outline-none focus:ring-1 focus:ring-wedding-blue text-stone-800"
+                  />
+                </div>
 
-            {/* Textarea Ucapan */}
-            <div className="mb-4">
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                Tulis Ucapan & Doa
-              </label>
-              <textarea
-                required
-                rows={4}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Tulis ucapan selamat & doa terbaik untuk kedua mempelai..."
-                className="w-full p-4 rounded-xl text-xs sm:text-sm bg-stone-50 border border-stone-200 focus:outline-none focus:ring-1 focus:ring-wedding-gold text-stone-800 resize-none leading-relaxed"
-              />
-            </div>
+                <div>
+                  <textarea
+                    required
+                    rows={3}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Ucapan"
+                    className="w-full p-3.5 rounded-xl text-xs sm:text-sm bg-white border border-stone-200 focus:outline-none focus:ring-1 focus:ring-wedding-blue text-stone-800 resize-none leading-relaxed"
+                  />
+                </div>
 
-            {/* Pilih Stiker / Emojis */}
-            <div className="mb-6 flex items-center gap-1.5 flex-wrap">
-              <span className="text-[11px] text-stone-500 font-medium mr-1 flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-wedding-gold-dark" />
-                Stiker:
-              </span>
-              {['🤲🤍', '💐', '👩‍❤️‍👨', '💍', '✨', '🎉', '🥰'].map((emoji) => (
+                {/* Konfirmasi Kehadiran Buttons */}
+                <div>
+                  <p className="text-xs font-semibold text-stone-700 mb-2">
+                    Konfirmasi Kehadiran:
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setAttendance('hadir')}
+                      className={`py-2 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 transition-all border ${
+                        attendance === 'hadir'
+                          ? 'bg-wedding-blue text-white border-wedding-blue shadow-sm'
+                          : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
+                      }`}
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Hadir</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setAttendance('tidak_hadir')}
+                      className={`py-2 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 transition-all border ${
+                        attendance === 'tidak_hadir'
+                          ? 'bg-wedding-blue text-white border-wedding-blue shadow-sm'
+                          : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
+                      }`}
+                    >
+                      <XCircle className="w-3.5 h-3.5" />
+                      <span>Tidak Hadir</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setAttendance('ragu')}
+                      className={`py-2 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 transition-all border ${
+                        attendance === 'ragu'
+                          ? 'bg-wedding-blue text-white border-wedding-blue shadow-sm'
+                          : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
+                      }`}
+                    >
+                      <HelpCircle className="w-3.5 h-3.5" />
+                      <span>Ragu</span>
+                    </button>
+                  </div>
+                </div>
+
+                {attendance === 'hadir' && (
+                  <div>
+                    <select
+                      value={guestCount}
+                      onChange={(e) => setGuestCount(Number(e.target.value))}
+                      className="w-full px-3.5 py-2 rounded-xl text-xs bg-white border border-stone-200 focus:outline-none focus:ring-1 focus:ring-wedding-blue text-stone-700"
+                    >
+                      <option value={1}>1 Orang</option>
+                      <option value={2}>2 Orang</option>
+                      <option value={3}>3 Orang</option>
+                      <option value={4}>4 Orang</option>
+                    </select>
+                  </div>
+                )}
+
+                {formFeedback && (
+                  <div
+                    className={`p-3 rounded-xl text-xs ${
+                      formFeedback.type === 'success'
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                        : 'bg-rose-50 text-rose-800 border border-rose-200'
+                    }`}
+                  >
+                    {formFeedback.text}
+                  </div>
+                )}
+
                 <button
-                  type="button"
-                  key={emoji}
-                  onClick={() => addSticker(emoji)}
-                  className="px-2 py-1 bg-stone-100 hover:bg-stone-200 rounded-lg text-xs transition-colors"
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full py-2.5 rounded-xl bg-wedding-blue hover:bg-wedding-blue-dark text-white font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 shadow-md active:scale-95 disabled:opacity-50"
                 >
-                  {emoji}
+                  <Send className="w-3.5 h-3.5" />
+                  <span>{submitting ? 'Mengirim...' : 'Kirim'}</span>
                 </button>
-              ))}
-            </div>
+              </form>
 
-            {/* Feedback message */}
-            {formFeedback && (
-              <div
-                className={`p-3 rounded-xl text-xs mb-4 ${
-                  formFeedback.type === 'success'
-                    ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                    : 'bg-rose-50 text-rose-800 border border-rose-200'
-                }`}
-              >
-                {formFeedback.text}
-              </div>
-            )}
+              {/* Divider */}
+              <div className="h-[1px] w-full bg-stone-200 mb-4" />
 
-            {/* Tombol Kirim */}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-3.5 rounded-full bg-stone-900 text-white font-semibold text-xs tracking-wider uppercase hover:bg-wedding-gold-dark transition-all flex items-center justify-center gap-2 shadow-md active:scale-95 disabled:opacity-50"
-            >
-              <Send className="w-4 h-4 text-wedding-gold" />
-              <span>{submitting ? 'Mengirim Ucapan...' : 'Kirim Ucapan'}</span>
-            </button>
-          </form>
-        </AnimateReveal>
-
-        {/* Filter Kehadiran Tabs */}
-        <div className="mb-5 flex items-center justify-center gap-1.5 overflow-x-auto pb-1 text-[11px]">
-          <button
-            onClick={() => {
-              setActiveFilter('all');
-              setVisibleCount(3);
-            }}
-            className={`px-3 py-1.5 rounded-full transition-all ${
-              activeFilter === 'all'
-                ? 'bg-stone-900 text-white font-semibold shadow-sm'
-                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-            }`}
-          >
-            Semua ({wishes.length})
-          </button>
-          <button
-            onClick={() => {
-              setActiveFilter('hadir');
-              setVisibleCount(3);
-            }}
-            className={`px-3 py-1.5 rounded-full transition-all ${
-              activeFilter === 'hadir'
-                ? 'bg-emerald-700 text-white font-semibold shadow-sm'
-                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-            }`}
-          >
-            Hadir ({hadirCount})
-          </button>
-          <button
-            onClick={() => {
-              setActiveFilter('ragu');
-              setVisibleCount(3);
-            }}
-            className={`px-3 py-1.5 rounded-full transition-all ${
-              activeFilter === 'ragu'
-                ? 'bg-amber-600 text-white font-semibold shadow-sm'
-                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-            }`}
-          >
-            Ragu ({raguCount})
-          </button>
-          <button
-            onClick={() => {
-              setActiveFilter('tidak_hadir');
-              setVisibleCount(3);
-            }}
-            className={`px-3 py-1.5 rounded-full transition-all ${
-              activeFilter === 'tidak_hadir'
-                ? 'bg-rose-700 text-white font-semibold shadow-sm'
-                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-            }`}
-          >
-            Tidak Hadir ({tidakHadirCount})
-          </button>
-        </div>
-
-        {/* Daftar Ucapan */}
-        <div className="space-y-4">
-          {loading ? (
-            <p className="text-center text-xs text-stone-500 py-6">
-              Memuat ucapan...
-            </p>
-          ) : filteredWishes.length === 0 ? (
-            <div className="text-center bg-white rounded-2xl p-6 border border-wedding-gold/20 text-xs text-stone-500">
-              Belum ada ucapan untuk kategori ini.
-            </div>
-          ) : (
-            displayedWishes.map((item, idx) => (
-              <AnimateReveal
-                key={item.id}
-                y={25}
-                delay={idx < 3 ? idx * 0.08 : 0}
-                duration={0.6}
-              >
-                <div className="luxury-card-light rounded-2xl p-5 shadow-sm text-left hover:shadow-md transition-all">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2.5">
-                      {/* Avatar Initials with Gold Accent */}
-                      <div className="w-8 h-8 rounded-full bg-stone-900 text-wedding-gold text-xs font-bold flex items-center justify-center border border-wedding-gold/40 shadow-sm shrink-0">
-                        {getInitials(item.name)}
-                      </div>
-
-                      <div>
-                        <h4 className="font-serif text-sm font-bold text-stone-900">
+              {/* Wishes List (Video 00:56 - 00:57) */}
+              <div className="space-y-3 text-left">
+                {loading ? (
+                  <p className="text-center text-xs text-stone-500 py-6">
+                    Memuat ucapan...
+                  </p>
+                ) : wishes.length === 0 ? (
+                  <p className="text-center text-xs text-stone-500 py-6">
+                    Jadilah yang pertama memberikan ucapan &amp; doa.
+                  </p>
+                ) : (
+                  paginatedWishes.map((item) => (
+                    <div
+                      key={item.id}
+                      className="bg-white rounded-2xl p-4 border border-stone-200/80 shadow-sm"
+                    >
+                      <div className="flex items-center flex-wrap gap-2 mb-1">
+                        <h4 className="font-sans text-xs sm:text-sm font-bold text-wedding-blue-dark">
                           {item.name}
                         </h4>
-                        {/* Attendance Badge */}
+
                         {item.attendance === 'hadir' && (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-semibold">
-                            <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-wedding-blue text-white text-[10px] font-semibold">
+                            <CheckCircle2 className="w-2.5 h-2.5" />
                             Hadir
                           </span>
                         )}
                         {item.attendance === 'tidak_hadir' && (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-rose-700 font-semibold">
-                            <XCircle className="w-2.5 h-2.5 text-rose-500" />
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-stone-500 text-white text-[10px] font-semibold">
+                            <XCircle className="w-2.5 h-2.5" />
                             Tidak Hadir
                           </span>
                         )}
                         {item.attendance === 'ragu' && (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-amber-700 font-semibold">
-                            <HelpCircle className="w-2.5 h-2.5 text-amber-500" />
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-600 text-white text-[10px] font-semibold">
+                            <HelpCircle className="w-2.5 h-2.5" />
                             Masih Ragu
                           </span>
                         )}
                       </div>
+
+                      <p className="text-xs text-stone-700 leading-relaxed mb-2">
+                        {item.message}
+                      </p>
+
+                      <div className="flex items-center justify-between text-[10px] text-stone-400">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {item.created_at
+                            ? new Date(item.created_at).toLocaleDateString('id-ID', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                              })
+                            : 'Baru saja'}
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => handleLike(item.id)}
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full transition-colors ${
+                            likedMap[item.id]
+                              ? 'text-rose-600 bg-rose-50'
+                              : 'text-stone-400 hover:text-rose-500'
+                          }`}
+                        >
+                          <Heart
+                            className={`w-3 h-3 ${
+                              likedMap[item.id] ? 'fill-current' : ''
+                            }`}
+                          />
+                          <span>{item.likes || 0}</span>
+                        </button>
+                      </div>
                     </div>
+                  ))
+                )}
+              </div>
 
+              {/* Numbered Pagination (← 1 2 3 →) */}
+              {totalPages > 1 && (
+                <div className="mt-5 flex items-center justify-center gap-1.5 text-xs">
+                  <button
+                    type="button"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    className="p-1.5 rounded-lg text-stone-600 hover:bg-stone-100 disabled:opacity-40"
+                    aria-label="Halaman sebelumnya"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                     <button
-                      onClick={() => replyTo(item.name)}
-                      className="inline-flex items-center gap-1 text-[11px] text-stone-500 hover:text-stone-900 px-2 py-1 rounded-full hover:bg-stone-100 transition-colors"
-                    >
-                      <MessageCircle className="w-3 h-3 text-wedding-gold" />
-                      <span>Balas</span>
-                    </button>
-                  </div>
-
-                  {/* Message Text */}
-                  <p className="text-xs sm:text-sm text-stone-700 leading-relaxed font-light mb-3 pl-10">
-                    {item.message}
-                  </p>
-
-                  {/* Footer card: Date & Likes */}
-                  <div className="flex items-center justify-between pt-2 border-t border-stone-100 text-[11px] text-stone-400 pl-10">
-                    <span>
-                      {item.created_at
-                        ? new Date(item.created_at).toLocaleDateString('id-ID', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                          })
-                        : 'Baru saja'}
-                    </span>
-
-                    <button
-                      onClick={() => handleLike(item.id)}
-                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full transition-colors ${
-                        likedMap[item.id]
-                          ? 'text-rose-600 bg-rose-50'
-                          : 'text-stone-500 hover:text-rose-500 hover:bg-stone-50'
+                      type="button"
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-7 h-7 rounded-lg font-semibold transition-all ${
+                        currentPage === page
+                          ? 'bg-wedding-blue text-white shadow-sm'
+                          : 'text-stone-600 hover:bg-stone-100'
                       }`}
                     >
-                      <Heart
-                        className={`w-3.5 h-3.5 ${
-                          likedMap[item.id] ? 'fill-current' : ''
-                        }`}
-                      />
-                      <span>{item.likes || 0}</span>
+                      {page}
                     </button>
-                  </div>
-                </div>
-              </AnimateReveal>
-            ))
-          )}
-        </div>
+                  ))}
 
-        {/* Tombol "Muat Lebih Banyak" / "Tampilkan Lebih Sedikit" */}
-        {filteredWishes.length > 3 && (
-          <div className="mt-6 flex justify-center">
-            {visibleCount < filteredWishes.length ? (
-              <button
-                onClick={handleLoadMore}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-stone-900 text-white text-xs font-semibold uppercase tracking-wider hover:bg-wedding-gold-dark transition-all shadow-md active:scale-95"
-              >
-                <ChevronDown className="w-4 h-4 text-wedding-gold" />
-                <span>
-                  Lihat Ucapan Lainnya ({filteredWishes.length - visibleCount} lagi)
-                </span>
-              </button>
-            ) : (
-              <button
-                onClick={handleShowLess}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-stone-200 text-stone-800 text-xs font-semibold uppercase tracking-wider hover:bg-stone-300 transition-all active:scale-95"
-              >
-                <ChevronUp className="w-4 h-4 text-stone-600" />
-                <span>Tampilkan Lebih Sedikit</span>
-              </button>
-            )}
+                  <button
+                    type="button"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    className="p-1.5 rounded-lg text-stone-600 hover:bg-stone-100 disabled:opacity-40"
+                    aria-label="Halaman berikutnya"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </AnimateReveal>
       </div>
     </section>
   );

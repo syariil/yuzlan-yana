@@ -24,8 +24,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="id">
-      <body className="antialiased selection:bg-wedding-gold selection:text-white">
+    <html lang="id" suppressHydrationWarning>
+      <body className="antialiased selection:bg-wedding-gold selection:text-white" suppressHydrationWarning>
         {children}
       </body>
     </html>

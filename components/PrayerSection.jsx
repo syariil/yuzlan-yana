@@ -1,42 +1,41 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { weddingData } from '@/data/weddingData';
+import { CornerFloral } from './FloralOrnaments';
 import AnimateReveal from './AnimateReveal';
 
 export default function PrayerSection() {
-  const { prayer, invitedBy } = weddingData;
+  const { prayer } = weddingData;
 
   return (
-    <section className="py-20 px-6 bg-wedding-dark text-white text-center relative z-10 overflow-hidden">
-      {/* Ambient background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-wedding-gold/5 rounded-full blur-3xl pointer-events-none" />
-
+    <section className="py-12 px-5 royal-blue-bg text-stone-800 text-center relative z-10 overflow-hidden">
       <div className="max-w-md mx-auto relative z-10">
-        {/* Doa Untuk Pengantin Card */}
-        <AnimateReveal y={35} duration={0.7} scale={0.97} className="mb-12">
-          <div className="luxury-card-dark double-gold-border rounded-[32px] p-7 sm:p-8 text-center transition-all duration-300 hover:border-wedding-gold/60 shadow-xl">
-            <span className="inline-block px-3.5 py-1 rounded-full bg-wedding-gold/15 text-wedding-gold text-[10px] font-bold tracking-[0.2em] uppercase mb-5 border border-wedding-gold/30">
-              DOA RESTU
-            </span>
+        <AnimateReveal y={30} duration={0.7} scale={0.97}>
+          <div className="royal-white-card rounded-[38px] p-7 sm:p-8 text-center relative overflow-hidden">
+            <CornerFloral position="top-left" />
+            <CornerFloral position="top-right" />
+            <CornerFloral position="bottom-left" />
+            <CornerFloral position="bottom-right" />
 
-            <h3 className="font-serif text-2xl font-bold tracking-wide text-white mb-6">
-              Doa Untuk Pengantin
-            </h3>
+            <div className="relative z-10">
+              <h3 className="font-script text-4xl sm:text-5xl text-wedding-gold-dark mb-4">
+                Doa Pengantin
+              </h3>
 
-            <p className="font-arabic text-2xl sm:text-3xl text-wedding-gold-light leading-relaxed mb-4 drop-shadow-sm">
-              {prayer.arabic}
-            </p>
+              <p className="font-arabic text-2xl sm:text-3xl text-stone-800 leading-relaxed mb-3">
+                {prayer.arabic}
+              </p>
 
-            <p className="font-sans text-xs sm:text-sm text-gray-300 italic mb-4 font-light">
-              {prayer.latin}
-            </p>
+              <p className="font-sans text-xs text-wedding-blue-dark italic mb-3 font-medium">
+                {prayer.latin}
+              </p>
 
-            <div className="h-[1px] w-12 bg-wedding-gold/40 mx-auto my-4" />
+              <div className="h-[1px] w-14 bg-wedding-gold/50 mx-auto my-3" />
 
-            <p className="font-sans text-xs sm:text-sm text-gray-200 font-light leading-relaxed px-2">
-              "{prayer.translation}"
-            </p>
+              <p className="font-sans text-xs sm:text-sm text-stone-600 font-normal leading-relaxed px-2">
+                &ldquo;{prayer.translation}&rdquo;
+              </p>
+            </div>
           </div>
         </AnimateReveal>
       </div>

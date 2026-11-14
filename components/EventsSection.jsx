@@ -1,14 +1,45 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { MapPin, Copy, Check, Clock, CalendarDays } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MapPin, Copy, Check, CalendarPlus } from 'lucide-react';
 import { weddingData } from '@/data/weddingData';
+import { CastleIllustration, BottomFloralBouquet } from './FloralOrnaments';
 import AnimateReveal from './AnimateReveal';
 
 export default function EventsSection() {
-  const { events } = weddingData;
+  const { events, heroPhoto, weddingDate } = weddingData;
   const [copiedId, setCopiedId] = useState(null);
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const targetDate = new Date(weddingDate).getTime();
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60),
+        });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [weddingDate]);
 
   const copyAddress = (address, id) => {
     navigator.clipboard.writeText(address);
@@ -16,121 +47,192 @@ export default function EventsSection() {
     setTimeout(() => setCopiedId(null), 2500);
   };
 
-  return (
-    <section id="events" className="py-20 px-6 bg-wedding-cream text-stone-800 relative z-10">
-      <div className="max-w-md mx-auto text-center">
-        {/* Header */}
-        <AnimateReveal y={30} duration={0.7} className="mb-14">
-          <div className="inline-block p-4 rounded-full bg-wedding-gold/15 text-wedding-gold mb-3 shadow-sm border border-wedding-gold/30">
-            {/* Interlocking Rings SVG */}
-            <svg
-              className="w-10 h-10 stroke-current fill-none stroke-[1.5]"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="9" cy="12" r="5" />
-              <circle cx="15" cy="12" r="5" />
-            </svg>
-          </div>
+  const addToCalendar = () => {
+    const title = encodeURIComponent(
+      `Pernikahan ${weddingData.bride.nickname} & ${weddingData.groom.nickname}`
+    );
+    const details = encodeURIComponent(
+      `Akad & Resepsi Pernikahan ${weddingData.bride.fullName} dan ${weddingData.groom.fullName}`
+    );
+    const location = encodeURIComponent(events[0]?.address || 'Bau-Bau');
+    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=20261208T000000Z/20261208T060000Z`;
 
-          <h2 className="font-serif text-3xl font-bold tracking-wide text-stone-900">
-            Save The Date
-          </h2>
-          <div className="flex items-center justify-center gap-2 mt-3">
-            <div className="h-[1px] w-8 bg-wedding-gold/60" />
-            <span className="text-xs text-wedding-gold-dark">✦</span>
-            <div className="h-[1px] w-8 bg-wedding-gold/60" />
-          </div>
-          <p className="text-xs text-stone-600 font-light mt-3 max-w-xs mx-auto">
-            Rangkaian prosesi sakral yang akan kami laksanakan:
+    window.open(calendarUrl, '_blank');
+  };
+
+  const countItems = [
+    { label: 'Hari', value: timeLeft.days },
+    { label: 'Jam', value: timeLeft.hours },
+    { label: 'Menit', value: timeLeft.minutes },
+    { label: 'Detik', value: timeLeft.seconds },
+  ];
+
+  return (
+    <section
+      id="events"
+      className="royal-blue-bg text-stone-800 pb-16 relative z-10 overflow-hidden"
+    >
+      {/* Top Photo Banner with "Save The Date" (Video 00:40 - 00:41) */}
+      <div className="relative w-full h-72 sm:h-80 overflow-hidden">
+        <img
+          src={heroPhoto}
+          alt="Save The Date Banner"
+          className="w-full h-full object-cover object-center filter brightness-[0.68]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/30 to-[#7492b3]" />
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 pb-8 text-center">
+          <AnimateReveal variant="zoom" scale={0.35} duration={0.85}>
+            <h2 className="font-script text-4xl sm:text-5xl text-white drop-shadow-md">
+              Save The Date
+            </h2>
+          </AnimateReveal>
+        </div>
+      </div>
+
+      {/* 4 Countdown Boxes Overlapping Photo Banner & Dusty Blue Section */}
+      <div className="max-w-md mx-auto px-5 -mt-12 relative z-20">
+        <div className="grid grid-cols-4 gap-2.5 sm:gap-3 mb-5">
+          {countItems.map((item, idx) => (
+            <AnimateReveal
+              key={item.label}
+              variant="zoom"
+              scale={0.35}
+              delay={0.05 + idx * 0.08}
+              duration={0.75}
+            >
+              <div className="bg-[#fcfbf9] rounded-xl py-3 px-1.5 flex flex-col items-center justify-center shadow-lg border border-wedding-gold/40">
+                <div className="relative overflow-hidden h-7 sm:h-8 flex items-center justify-center w-full">
+                  <AnimatePresence mode="popLayout">
+                    <motion.span
+                      key={`${item.label}-${item.value}`}
+                      initial={{ y: -16, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 16, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: 'easeInOut' }}
+                      className="font-serif text-xl sm:text-2xl font-bold text-stone-800 absolute"
+                    >
+                      {String(item.value).padStart(2, '0')}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+                <span className="text-[10px] text-stone-600 font-medium mt-0.5">
+                  {item.label}
+                </span>
+              </div>
+            </AnimateReveal>
+          ))}
+        </div>
+
+        {/* Greeting Text & Save to Calendar on Dusty Blue Background (Video 00:41 - 00:42) */}
+        <AnimateReveal
+          variant="zoom"
+          scale={0.4}
+          duration={0.85}
+          className="text-center mb-6 px-3"
+        >
+          <p className="font-sans text-xs text-white/95 leading-relaxed mb-3">
+            Dan kami bersyukur, dipertemukan Allah di waktu terbaik. Kini kami
+            menanti hari istimewa kami.
           </p>
+          <button
+            onClick={addToCalendar}
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 hover:bg-white/30 text-white text-[11px] font-semibold tracking-wider uppercase border border-white/40 transition-all active:scale-95"
+          >
+            <CalendarPlus className="w-3.5 h-3.5" />
+            <span>Simpan ke Kalender</span>
+          </button>
         </AnimateReveal>
 
-        {/* Event Cards List */}
-        <div className="space-y-8">
-          {events.map((event, index) => (
-            <AnimateReveal
-              key={event.id}
-              y={35}
-              delay={index * 0.12}
-              duration={0.7}
-              scale={0.97}
-              className="relative"
-            >
-              <div className="luxury-card-light double-gold-border rounded-[32px] p-7 text-center relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                {/* Event Category Tag */}
-                <div className="inline-block px-3 py-0.5 rounded-full bg-stone-100 text-stone-600 text-[10px] font-semibold tracking-wider uppercase mb-3 border border-stone-200">
-                  Acara #{index + 1}
-                </div>
+        {/* White Arch Card Inside Dusty Blue Section (Video 00:41 - 00:44) */}
+        <div className="royal-white-card rounded-[38px] pt-8 text-center relative overflow-hidden">
+          {/* Small Castle Illustration Zooming In at Top of Card */}
+          <AnimateReveal variant="zoom" scale={0.25} duration={0.9}>
+            <CastleIllustration size="small" className="-mb-2" />
+          </AnimateReveal>
 
-                {/* Event Title */}
-                <h3 className="font-serif text-2xl font-bold text-stone-900 mb-1">
-                  {event.name}
-                </h3>
-
-                {/* Ornamental flourish */}
-                <div className="flex items-center justify-center gap-3 my-3">
-                  <div className="h-[1px] w-10 bg-wedding-gold/50" />
-                  <span className="text-[10px] text-wedding-gold">❖</span>
-                  <div className="h-[1px] w-10 bg-wedding-gold/50" />
-                </div>
-
-                {/* Date & Time with distinct pill badges */}
-                <div className="space-y-1.5 my-3">
-                  <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-stone-800">
-                    <CalendarDays className="w-3.5 h-3.5 text-wedding-gold-dark" />
-                    <span>{event.date}</span>
+          {/* Events List (Akad Nikah & Resepsi) — Each zooming in like Video 00:41-00:43 */}
+          <div className="px-6 space-y-8 pb-6 relative z-10">
+            {events.map((event, index) => (
+              <div key={event.id}>
+                {index > 0 && (
+                  <div className="flex items-center justify-center gap-3 mb-7">
+                    <div className="h-[1px] w-14 bg-wedding-gold/40" />
+                    <span className="text-xs text-wedding-gold">❖</span>
+                    <div className="h-[1px] w-14 bg-wedding-gold/40" />
                   </div>
-                  <div>
-                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-wedding-gold/15 text-wedding-gold-dark text-xs font-semibold border border-wedding-gold/30">
-                      <Clock className="w-3 h-3 text-wedding-gold-dark" />
-                      <span>{event.time}</span>
-                    </span>
-                  </div>
-                </div>
+                )}
 
-                {/* Venue & Address */}
-                <div className="mt-5 flex flex-col items-center pt-3 border-t border-stone-100">
-                  <MapPin className="w-5 h-5 text-wedding-gold-dark mb-1.5" />
-                  <h4 className="font-sans text-xs sm:text-sm font-bold tracking-wider uppercase text-stone-900 mb-1">
-                    {event.venue}
-                  </h4>
-                  <p className="text-xs text-stone-600 font-light max-w-xs leading-relaxed px-2 mb-6">
+                <AnimateReveal
+                  variant="zoom"
+                  scale={0.35}
+                  duration={0.85}
+                  delay={0.05}
+                >
+                  <h3 className="font-script text-4xl sm:text-5xl text-wedding-gold-dark mb-2">
+                    {event.name}
+                  </h3>
+                </AnimateReveal>
+
+                <AnimateReveal
+                  variant="zoom"
+                  scale={0.35}
+                  duration={0.85}
+                  delay={0.12}
+                >
+                  <p className="font-serif text-xs sm:text-sm font-bold uppercase tracking-wider text-stone-800">
+                    {event.date}
+                  </p>
+                  <p className="font-sans text-xs sm:text-sm text-stone-600 font-medium mt-0.5 mb-3">
+                    Pukul : {event.time}
+                  </p>
+
+                  <p className="font-sans text-xs font-bold uppercase tracking-wider text-stone-800 mb-1">
+                    Tempat : {event.venue}
+                  </p>
+                  <p className="font-sans text-xs text-stone-600 font-normal leading-relaxed max-w-xs mx-auto mb-4 px-1">
                     {event.address}
                   </p>
 
-                  {/* Dual Action Buttons: Google Maps & Salin Alamat */}
-                  <div className="flex items-center justify-center gap-2.5 w-full flex-wrap">
+                  <div className="flex items-center justify-center gap-2 flex-wrap">
                     <a
                       href={event.mapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-stone-900 text-white text-xs font-medium hover:bg-wedding-gold-dark transition-all duration-300 shadow-md active:scale-95"
+                      className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-wedding-blue hover:bg-wedding-blue-dark text-white text-xs font-semibold shadow-md transition-all duration-300 active:scale-95"
                     >
-                      <MapPin className="w-3.5 h-3.5 text-wedding-gold" />
+                      <MapPin className="w-3.5 h-3.5" />
                       <span>Google Maps</span>
                     </a>
 
                     <button
                       onClick={() => copyAddress(event.address, event.id)}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-medium transition-all border border-stone-200 active:scale-95"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-medium transition-all border border-stone-200 active:scale-95"
                     >
                       {copiedId === event.id ? (
                         <>
                           <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          <span className="text-emerald-700 font-semibold">Tersalin!</span>
+                          <span className="text-emerald-700 font-semibold">
+                            Tersalin!
+                          </span>
                         </>
                       ) : (
                         <>
-                          <Copy className="w-3.5 h-3.5 text-stone-600" />
+                          <Copy className="w-3.5 h-3.5 text-stone-500" />
                           <span>Salin Alamat</span>
                         </>
                       )}
                     </button>
                   </div>
-                </div>
+                </AnimateReveal>
               </div>
-            </AnimateReveal>
-          ))}
+            ))}
+          </div>
+
+          {/* Bottom Floral Bouquet Inside the White Arch Card */}
+          <div className="w-full -mb-1">
+            <BottomFloralBouquet />
+          </div>
         </div>
       </div>
     </section>

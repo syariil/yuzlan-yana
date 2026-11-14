@@ -13,10 +13,15 @@ module.exports = {
           darker: '#151718',
           card: '#282b2e',
           cream: '#faf8f5',
+          ivory: '#fcfbf9',
           soft: '#f3ede4',
           gold: '#c5a880',
           'gold-light': '#dfceb7',
           'gold-dark': '#9e7d54',
+          blue: '#7492b3',
+          'blue-dark': '#4a6785',
+          'blue-light': '#dce6f2',
+          'blue-soft': '#eaf0f7',
           muted: '#8b8f94',
         },
       },
@@ -44,4 +49,3 @@ module.exports = {
   },
   plugins: [],
 };
-

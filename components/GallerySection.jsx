@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ZoomIn } from 'lucide-react';
 import { weddingData } from '@/data/weddingData';
+import { CornerFloral } from './FloralOrnaments';
 import AnimateReveal from './AnimateReveal';
 
 export default function GallerySection() {
-  const { galleryQuote, quotePhoto, gallery } = weddingData;
+  const { galleryQuote, gallery } = weddingData;
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Lock scroll when lightbox is opened & handle escape key
   useEffect(() => {
     if (selectedImage) {
       document.body.style.overflow = 'hidden';
@@ -28,80 +28,51 @@ export default function GallerySection() {
   }, [selectedImage]);
 
   return (
-    <section id="gallery" className="bg-wedding-cream text-stone-800">
-      {/* Banner Quote Photo */}
-      <div className="relative w-full h-80 sm:h-96 overflow-hidden">
-        <motion.img
-          initial={{ scale: 1.08 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: false }}
-          transition={{ duration: 1.6 }}
-          src={quotePhoto}
-          alt="Quote Banner"
-          className="w-full h-full object-cover filter brightness-[0.72]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30 flex items-center justify-center p-6 text-center">
-          <AnimateReveal y={25} duration={0.8}>
-            <div className="max-w-sm">
-              <span className="font-serif text-3xl sm:text-4xl text-wedding-gold opacity-80 block mb-1">
-                “
-              </span>
-              <p className="font-serif italic text-base sm:text-lg text-white leading-relaxed drop-shadow-md">
-                {galleryQuote}
-              </p>
-              <div className="flex items-center justify-center gap-2 mt-4">
-                <div className="h-[1px] w-6 bg-wedding-gold/60" />
-                <span className="text-[10px] text-wedding-gold">✦</span>
-                <div className="h-[1px] w-6 bg-wedding-gold/60" />
-              </div>
-            </div>
-          </AnimateReveal>
-        </div>
-      </div>
+    <section
+      id="gallery"
+      className="py-16 px-6 ivory-bg text-stone-800 relative z-10 overflow-hidden"
+    >
+      <CornerFloral position="top-left" className="opacity-70" />
+      <CornerFloral position="top-right" className="opacity-70" />
 
-      {/* Gallery Grid */}
-      <div className="py-20 px-6 max-w-md mx-auto text-center">
-        {/* Title */}
-        <AnimateReveal y={30} duration={0.7} className="mb-10">
-          <h2 className="font-serif text-3xl font-bold tracking-wide text-stone-900">
-            Our Gallery
+      <div className="max-w-md mx-auto text-center relative z-10">
+        {/* Title: Galeri Foto (Video 00:50 - 00:53) */}
+        <AnimateReveal y={25} duration={0.7} className="mb-8">
+          <h2 className="font-script text-4xl sm:text-5xl text-wedding-gold-dark mb-2">
+            Galeri Foto
           </h2>
-          <div className="flex items-center justify-center gap-2 mt-3">
-            <div className="h-[1px] w-8 bg-wedding-gold/60" />
-            <span className="text-xs text-wedding-gold-dark">✦</span>
-            <div className="h-[1px] w-8 bg-wedding-gold/60" />
-          </div>
+          <p className="font-serif italic text-xs sm:text-sm text-stone-600 max-w-xs mx-auto leading-relaxed">
+            &ldquo;{galleryQuote}&rdquo;
+          </p>
         </AnimateReveal>
 
-        {/* Masonry / Grid */}
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        {/* 2-Column Rounded Photo Grid */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-3.5">
           {gallery.map((item, idx) => (
             <AnimateReveal
               key={item.id}
-              y={30}
-              delay={idx * 0.08}
-              duration={0.65}
+              y={25}
+              delay={(idx % 4) * 0.07}
+              duration={0.6}
               scale={0.96}
               className={item.span === 'col-span-2' ? 'col-span-2' : 'col-span-1'}
             >
               <div
                 onClick={() => setSelectedImage(item)}
-                className={`relative rounded-2xl overflow-hidden cursor-pointer group shadow-sm bg-stone-200 border border-wedding-gold/30 hover:border-wedding-gold transition-all duration-300 ${
-                  item.span === 'col-span-2' ? 'h-52' : 'h-44'
+                className={`relative rounded-2xl overflow-hidden cursor-pointer group shadow-md bg-stone-200 border-2 border-white ring-1 ring-wedding-gold/30 transition-all duration-300 ${
+                  item.span === 'col-span-2' ? 'h-52 sm:h-60' : 'h-44 sm:h-48'
                 }`}
               >
                 <img
                   src={item.src}
                   alt={item.caption}
-                  className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-3 text-white text-center">
-                  <div className="w-9 h-9 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center mb-1 border border-wedding-gold/40">
-                    <ZoomIn className="w-4 h-4 text-wedding-gold" />
+                <div className="absolute inset-0 bg-wedding-blue-dark/35 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-3 text-white text-center">
+                  <div className="w-9 h-9 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center mb-1 border border-white/50">
+                    <ZoomIn className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-[11px] font-light text-gray-200">
-                    {item.caption}
-                  </span>
                 </div>
               </div>
             </AnimateReveal>
@@ -117,12 +88,12 @@ export default function GallerySection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 backdrop-blur-md"
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm"
           >
             <button
               onClick={() => setSelectedImage(null)}
               aria-label="Tutup foto"
-              className="absolute top-6 right-6 text-white/80 hover:text-white p-2.5 rounded-full glass-dark border border-white/20 active:scale-95 transition-all"
+              className="absolute top-6 right-6 text-white/80 hover:text-white p-2.5 rounded-full bg-white/10 border border-white/20 active:scale-95 transition-all"
             >
               <X className="w-5 h-5" />
             </button>
@@ -130,22 +101,22 @@ export default function GallerySection() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="max-w-lg w-full rounded-2xl overflow-hidden bg-stone-950 shadow-2xl border border-wedding-gold/30"
+              className="max-w-lg w-full rounded-2xl overflow-hidden bg-white shadow-2xl border-2 border-wedding-gold/40"
             >
-              <div className="relative">
+              <div className="relative bg-stone-950">
                 <img
                   src={selectedImage.src}
                   alt={selectedImage.caption}
-                  className="w-full max-h-[72vh] object-contain mx-auto"
+                  className="w-full max-h-[75vh] object-contain mx-auto"
                 />
               </div>
-              <div className="p-4 bg-stone-900/90 text-center border-t border-white/10 flex items-center justify-between px-5">
-                <p className="text-xs text-gray-200 font-light">
+              <div className="p-3.5 bg-[#fcfbf9] text-center flex items-center justify-between px-5">
+                <p className="text-xs text-stone-700 font-medium">
                   {selectedImage.caption}
                 </p>
-                <span className="text-[10px] text-wedding-gold uppercase tracking-wider font-semibold">
+                <span className="text-[10px] text-wedding-blue-dark uppercase tracking-wider font-bold">
                   Foto {selectedImage.id} / {gallery.length}
                 </span>
               </div>

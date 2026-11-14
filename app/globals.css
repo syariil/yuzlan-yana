@@ -13,12 +13,23 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  -webkit-overflow-scrolling: touch;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Scroll Slide Section Snapping: halus & tidak melompati konten panjang */
+.snap-section {
+  scroll-snap-align: start;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #151718;
+  background-color: #e8eef5;
   color: #2c2724;
   overflow-x: hidden;
 }
@@ -28,42 +39,56 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #1e2022;
+  background: #f4f1ea;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c5a880;
+  background: #7492b3;
   border-radius: 3px;
 }
 
+/* Ivory Watercolor / Paper Subtle Texture */
+.ivory-bg {
+  background-color: #fcfbf9;
+  background-image:
+    radial-gradient(at 20% 15%, rgba(220, 230, 242, 0.45) 0px, transparent 55%),
+    radial-gradient(at 80% 85%, rgba(243, 232, 210, 0.4) 0px, transparent 55%);
+}
+
+/* Dusty Slate Blue Royal Background */
+.royal-blue-bg {
+  background: linear-gradient(180deg, #7492b3 0%, #6382a6 50%, #7492b3 100%);
+}
+
+/* White Arch Card inside Blue Sections */
+.royal-white-card {
+  background: #fcfbf9;
+  border: 2px solid #ffffff;
+  box-shadow: 0 18px 40px -10px rgba(45, 68, 96, 0.28), inset 0 0 0 1px rgba(197, 168, 128, 0.35);
+  transform: translateZ(0);
+}
+
 /* Glassmorphism helpers - dioptimalkan untuk performa tinggi */
-.glass-dark {
-  background: rgba(26, 28, 30, 0.9);
+.glass-blue {
+  background: rgba(74, 103, 133, 0.88);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(197, 168, 128, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   transform: translateZ(0);
 }
 
 .glass-light {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(197, 168, 128, 0.3);
+  border: 1px solid rgba(197, 168, 128, 0.35);
   transform: translateZ(0);
 }
 
 /* Luxury Cards Styling with GPU Acceleration */
-.luxury-card-dark {
-  background: linear-gradient(160deg, #282b2e 0%, #1f2124 100%);
-  border: 1px solid rgba(197, 168, 128, 0.28);
-  box-shadow: 0 14px 30px -6px rgba(0, 0, 0, 0.45);
-  transform: translateZ(0);
-}
-
 .luxury-card-light {
   background: #ffffff;
   border: 1px solid rgba(197, 168, 128, 0.35);
-  box-shadow: 0 10px 24px -4px rgba(44, 39, 36, 0.08);
+  box-shadow: 0 10px 24px -4px rgba(74, 103, 133, 0.1);
   transform: translateZ(0);
 }
 
@@ -75,18 +100,10 @@ body {
   content: '';
   position: absolute;
   inset: 6px;
-  border: 1px dashed rgba(197, 168, 128, 0.35);
+  border: 1px dashed rgba(197, 168, 128, 0.4);
   border-radius: inherit;
   pointer-events: none;
   z-index: 0;
-}
-
-/* Arch Shape for Wedding Photos */
-.arch-photo-frame {
-  border-top-left-radius: 90px;
-  border-top-right-radius: 90px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
 }
 
 /* ============================================
@@ -112,38 +129,10 @@ body {
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.32) 50%,
     rgba(255, 255, 255, 0) 100%
   );
   animation: shimmer 3s infinite;
-}
-
-/* ============================================
-   GOLD GLOW TEXT (Ringan & Tajam)
-   ============================================ */
-.gold-glow {
-  text-shadow: 0 0 16px rgba(197, 168, 128, 0.45);
-}
-
-/* ============================================
-   AMBIENT PARTICLES
-   ============================================ */
-@keyframes float-particle {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px) scale(1);
-    opacity: 0.2;
-  }
-  50% {
-    transform: translateY(-28px) translateX(14px) scale(1.2);
-    opacity: 0.9;
-  }
-}
-
-.particle {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(circle, #e6c89c 0%, rgba(197, 168, 128, 0) 70%);
 }
 
 /* ============================================
@@ -156,7 +145,7 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 10;
+  z-index: 30;
   overflow: hidden;
   contain: strict;
 }
@@ -173,14 +162,14 @@ body {
 /* Fall animations using pure transform (GPU only) */
 @keyframes petal-fall-1 {
   0%   { transform: translate3d(0, -60px, 0)   rotate(0deg)   scale(1);   opacity: 0; }
-  8%   { opacity: 0.9; }
-  85%  { opacity: 0.7; }
+  8%   { opacity: 0.85; }
+  85%  { opacity: 0.65; }
   100% { transform: translate3d(60px, 110vh, 0) rotate(540deg) scale(0.7); opacity: 0; }
 }
 @keyframes petal-fall-2 {
   0%   { transform: translate3d(0, -60px, 0)   rotate(30deg)  scale(0.9); opacity: 0; }
-  8%   { opacity: 0.85; }
-  85%  { opacity: 0.6; }
+  8%   { opacity: 0.8; }
+  85%  { opacity: 0.55; }
   100% { transform: translate3d(-50px, 110vh, 0) rotate(-480deg) scale(0.6); opacity: 0; }
 }
 @keyframes petal-fall-3 {
@@ -191,92 +180,15 @@ body {
 }
 @keyframes petal-fall-4 {
   0%   { transform: translate3d(0, -60px, 0)   rotate(60deg)  scale(0.85); opacity: 0; }
-  8%   { opacity: 0.9; }
+  8%   { opacity: 0.85; }
   85%  { opacity: 0.6; }
   100% { transform: translate3d(-60px, 110vh, 0) rotate(-360deg) scale(0.7); opacity: 0; }
 }
 @keyframes petal-fall-5 {
   0%   { transform: translate3d(0, -60px, 0)   rotate(-40deg) scale(1);   opacity: 0; }
-  8%   { opacity: 0.85; }
+  8%   { opacity: 0.8; }
   85%  { opacity: 0.5; }
   100% { transform: translate3d(50px, 110vh, 0)  rotate(420deg) scale(0.8); opacity: 0; }
-}
-
-/* ============================================
-   SECTION ENTRANCE ANIMATIONS (Enhanced)
-   ============================================ */
-@keyframes slide-up-fade {
-  0%   { opacity: 0; transform: translateY(40px); }
-  100% { opacity: 1; transform: translateY(0px); }
-}
-
-@keyframes slide-in-left {
-  0%   { opacity: 0; transform: translateX(-30px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes slide-in-right {
-  0%   { opacity: 0; transform: translateX(30px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes scale-in {
-  0%   { opacity: 0; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-@keyframes pulse-gold {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0); }
-  50%       { box-shadow: 0 0 0 8px rgba(197, 168, 128, 0.15); }
-}
-
-.animate-pulse-gold {
-  animation: pulse-gold 2.5s ease-in-out infinite;
-}
-
-/* ============================================
-   HEARTBEAT ANIMATION (For love elements)
-   ============================================ */
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  14%       { transform: scale(1.15); }
-  28%       { transform: scale(1); }
-  42%       { transform: scale(1.1); }
-  70%       { transform: scale(1); }
-}
-
-.animate-heartbeat {
-  animation: heartbeat 1.8s ease-in-out infinite;
-}
-
-/* ============================================
-   TWINKLING STARS (for dark sections)
-   ============================================ */
-@keyframes twinkle {
-  0%, 100% { opacity: 0.1; transform: scale(0.8); }
-  50%       { opacity: 1; transform: scale(1.2); }
-}
-
-.twinkle-star {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: #e6c89c;
-  pointer-events: none;
-  animation: twinkle ease-in-out infinite;
-}
-
-/* ============================================
-   SPINNING SLOW (music disc / rings)
-   ============================================ */
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 8s linear infinite;
 }
 
 /* ============================================
@@ -289,26 +201,4 @@ body {
 
 .animate-fade-in {
   animation: fade-in-up 0.4s ease-out forwards;
-}
-
-/* ============================================
-   WAVING (organic ambient)
-   ============================================ */
-@keyframes wave-gentle {
-  0%, 100% { transform: rotate(-3deg) scale(1); }
-  50%       { transform: rotate(3deg) scale(1.05); }
-}
-
-.animate-wave {
-  animation: wave-gentle 4s ease-in-out infinite;
-}
-
-/* ============================================
-   GRADIENT BORDER GLOW (highlight on cards)
-   ============================================ */
-.card-gold-glow:hover {
-  box-shadow: 0 0 0 1px rgba(197, 168, 128, 0.6),
-              0 20px 40px -8px rgba(0, 0, 0, 0.3),
-              0 0 24px rgba(197, 168, 128, 0.15);
-  transition: box-shadow 0.4s ease;
 }
