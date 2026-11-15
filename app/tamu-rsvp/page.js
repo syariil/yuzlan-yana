@@ -92,7 +92,12 @@ export default function GuestGeneratorPage() {
   // Ambil domain/origin otomatis saat halaman dibuka di browser & muat data tersimpan dari localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setBaseUrl(window.location.origin);
+      if (
+        window.location.hostname !== 'localhost' &&
+        window.location.hostname !== '127.0.0.1'
+      ) {
+        setBaseUrl(window.location.origin);
+      }
 
       const savedTemplate = localStorage.getItem('wedding_caption_template');
       if (savedTemplate) {
@@ -162,22 +167,69 @@ export default function GuestGeneratorPage() {
     return digits;
   };
 
-  // Langsung share ke WhatsApp
-  const shareToWhatsApp = (targetName = guestName) => {
-    const nameToUse = targetName.trim() || 'Tamu Undangan';
+  // Buat URL WhatsApp resmi (wa.me)
+  const getWhatsAppUrl = (targetName = guestName) => {
+    const nameToUse =
+      typeof targetName === 'string' && targetName.trim()
+        ? targetName.trim()
+        : 'Tamu Undangan';
     const message = generateFinalMessage(nameToUse);
     const encodedMessage = encodeURIComponent(message);
+    return `https://wa.me/?text=${encodedMessage}`;
+  };
 
-    const waUrl = `https://api.whatsapp.com/send?text=${encodedMessage}`;
+  // Handler klik Share ke WhatsApp (kompatibel di Desktop, HP Android/iPhone & In-App Browser Vercel)
+  const handleWhatsAppShare = (e, targetName = guestName) => {
+    const nameToUse =
+      typeof targetName === 'string' && targetName.trim()
+        ? targetName.trim()
+        : 'Tamu Undangan';
+    const message = generateFinalMessage(nameToUse);
+    const encodedMessage = encodeURIComponent(message);
+    const waWebUrl = `https://wa.me/?text=${encodedMessage}`;
+    const waAppUrl = `whatsapp://send?text=${encodedMessage}`;
 
-    window.open(waUrl, '_blank');
+    if (typeof window !== 'undefined') {
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent || ''
+      );
+
+      if (isMobile) {
+        // Di HP / In-App Browser (WA/IG/Chrome Mobile/Safari), window.open('_blank') sering diblokir.
+        // Gunakan deep link whatsapp:// dengan fallback ke https://wa.me/
+        e.preventDefault();
+        window.location.href = waAppUrl;
+        setTimeout(() => {
+          if (document.visibilityState === 'visible') {
+            window.location.href = waWebUrl;
+          }
+        }, 1200);
+      }
+      // Di Desktop, biarkan tag <a href={waWebUrl} target="_blank"> berjalan alami agar tidak diblokir popup blocker
+    }
   };
 
   // Salin teks caption lengkap atau link saja
-  const copyText = (text, type) => {
-    navigator.clipboard.writeText(text);
-    setCopiedType(type);
-    setTimeout(() => setCopiedType(null), 2500);
+  const copyText = async (text, type) => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      setCopiedType(type);
+      setTimeout(() => setCopiedType(null), 2500);
+    } catch (err) {
+      // ignore
+    }
   };
 
   // Simpan nama ke daftar tamu di bawah agar mudah dikelola
@@ -405,14 +457,16 @@ export default function GuestGeneratorPage() {
 
               {/* Action Buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4">
-                <button
-                  type="button"
-                  onClick={() => shareToWhatsApp(guestName, guestPhone)}
+                <a
+                  href={getWhatsAppUrl(guestName)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => handleWhatsAppShare(e, guestName)}
                   className="w-full py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
                 >
                   <MessageCircle className="w-4 h-4 fill-current" />
                   <span>Share ke WhatsApp</span>
-                </button>
+                </a>
 
                 <button
                   type="button"
@@ -480,14 +534,16 @@ export default function GuestGeneratorPage() {
                       </div>
 
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <button
-                          type="button"
-                          onClick={() => shareToWhatsApp(item.name, item.phone)}
+                        <a
+                          href={getWhatsAppUrl(item.name)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => handleWhatsAppShare(e, item.name)}
                           className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold flex items-center gap-1 shadow-sm"
                         >
                           <Send className="w-3 h-3" />
                           <span>Share WA</span>
-                        </button>
+                        </a>
 
                         <button
                           type="button"
