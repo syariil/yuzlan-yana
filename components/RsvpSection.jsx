@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { CornerFloral } from './FloralOrnaments';
+import { CornerFloral, BackgroundWatermark } from './FloralOrnaments';
 import AnimateReveal from './AnimateReveal';
 
 const ITEMS_PER_PAGE = 4;
@@ -25,11 +25,8 @@ export default function RsvpSection() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [likedMap, setLikedMap] = useState({});
-
-  // Numbered Pagination State (matching Video 00:56 - 00:57)
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Form State
   const [name, setName] = useState('');
   const [attendance, setAttendance] = useState('hadir');
   const [guestCount, setGuestCount] = useState(1);
@@ -178,26 +175,32 @@ export default function RsvpSection() {
       className="py-14 px-5 royal-blue-bg text-stone-800 relative z-10 overflow-hidden"
     >
       <div className="max-w-md mx-auto">
-        <AnimateReveal y={35} duration={0.75} scale={0.97}>
-          {/* White Rounded Card inside Dusty Blue Section (Video 00:55 - 00:57) */}
-          <div className="royal-white-card rounded-[38px] p-6 sm:p-8 relative overflow-hidden">
-            <CornerFloral position="top-left" />
-            <CornerFloral position="top-right" />
-            <CornerFloral position="bottom-left" />
-            <CornerFloral position="bottom-right" />
+        {/* Warm Cream Rounded Card inside Maroon Section (Video 00:55 - 00:57) */}
+        <div className="royal-white-card rounded-[38px] p-6 sm:p-8 relative overflow-hidden">
+          <CornerFloral position="top-left" />
+          <CornerFloral position="top-right" />
+          <CornerFloral position="bottom-left" />
+          <CornerFloral position="bottom-right" />
+          <BackgroundWatermark />
 
-            <div className="relative z-10">
-              {/* Header */}
-              <div className="text-center mb-6">
-                <h2 className="font-script text-4xl sm:text-5xl text-wedding-gold-dark mb-1">
-                  Ucapan &amp; Doa
-                </h2>
-                <p className="font-sans text-xs sm:text-sm text-stone-600">
-                  Berikan ucapan harapan dan doa kepada kedua mempelai
-                </p>
-              </div>
+          <div className="relative z-10">
+            {/* Header */}
+            <AnimateReveal
+              variant="zoom"
+              scale={0.2}
+              duration={0.95}
+              className="text-center mb-6"
+            >
+              <h2 className="font-script text-4xl sm:text-5xl text-wedding-blue mb-1">
+                Ucapan &amp; Doa
+              </h2>
+              <p className="font-sans text-xs sm:text-sm text-stone-700">
+                Berikan ucapan harapan dan doa kepada kedua mempelai
+              </p>
+            </AnimateReveal>
 
-              {/* RSVP Form */}
+            {/* RSVP Form */}
+            <AnimateReveal variant="zoom" scale={0.22} duration={0.95} delay={0.08}>
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-3.5 mb-7">
                 <div>
                   <input
@@ -206,7 +209,7 @@ export default function RsvpSection() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Nama"
-                    className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm bg-white border border-stone-200 focus:outline-none focus:ring-1 focus:ring-wedding-blue text-stone-800"
+                    className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm bg-[#fffdf9] border border-wedding-gold/40 focus:outline-none focus:ring-1 focus:ring-wedding-blue text-stone-800"
                   />
                 </div>
 
@@ -216,15 +219,15 @@ export default function RsvpSection() {
                     rows={3}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Ucapan"
-                    className="w-full p-3.5 rounded-xl text-xs sm:text-sm bg-white border border-stone-200 focus:outline-none focus:ring-1 focus:ring-wedding-blue text-stone-800 resize-none leading-relaxed"
+                    placeholder="Berikan Ucapan & Doa"
+                    className="w-full p-3.5 rounded-xl text-xs sm:text-sm bg-[#fffdf9] border border-wedding-gold/40 focus:outline-none focus:ring-1 focus:ring-wedding-blue text-stone-800 resize-none leading-relaxed"
                   />
                 </div>
 
                 {/* Konfirmasi Kehadiran Buttons */}
                 <div>
                   <p className="text-xs font-semibold text-stone-700 mb-2">
-                    Konfirmasi Kehadiran:
+                    Konfirmasi Kehadiran ?
                   </p>
                   <div className="grid grid-cols-3 gap-2">
                     <button
@@ -233,7 +236,7 @@ export default function RsvpSection() {
                       className={`py-2 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 transition-all border ${
                         attendance === 'hadir'
                           ? 'bg-wedding-blue text-white border-wedding-blue shadow-sm'
-                          : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
+                          : 'bg-[#fffdf9] text-stone-700 border-wedding-gold/40 hover:bg-stone-50'
                       }`}
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
@@ -246,7 +249,7 @@ export default function RsvpSection() {
                       className={`py-2 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 transition-all border ${
                         attendance === 'tidak_hadir'
                           ? 'bg-wedding-blue text-white border-wedding-blue shadow-sm'
-                          : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
+                          : 'bg-[#fffdf9] text-stone-700 border-wedding-gold/40 hover:bg-stone-50'
                       }`}
                     >
                       <XCircle className="w-3.5 h-3.5" />
@@ -259,7 +262,7 @@ export default function RsvpSection() {
                       className={`py-2 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 transition-all border ${
                         attendance === 'ragu'
                           ? 'bg-wedding-blue text-white border-wedding-blue shadow-sm'
-                          : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
+                          : 'bg-[#fffdf9] text-stone-700 border-wedding-gold/40 hover:bg-stone-50'
                       }`}
                     >
                       <HelpCircle className="w-3.5 h-3.5" />
@@ -273,7 +276,7 @@ export default function RsvpSection() {
                     <select
                       value={guestCount}
                       onChange={(e) => setGuestCount(Number(e.target.value))}
-                      className="w-full px-3.5 py-2 rounded-xl text-xs bg-white border border-stone-200 focus:outline-none focus:ring-1 focus:ring-wedding-blue text-stone-700"
+                      className="w-full px-3.5 py-2 rounded-xl text-xs bg-[#fffdf9] border border-wedding-gold/40 focus:outline-none focus:ring-1 focus:ring-wedding-blue text-stone-700"
                     >
                       <option value={1}>1 Orang</option>
                       <option value={2}>2 Orang</option>
@@ -298,34 +301,39 @@ export default function RsvpSection() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-2.5 rounded-xl bg-wedding-blue hover:bg-wedding-blue-dark text-white font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 shadow-md active:scale-95 disabled:opacity-50"
+                  className="w-full py-2.5 rounded-xl bg-wedding-blue hover:bg-wedding-blue-dark text-white font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 shadow-md active:scale-95 disabled:opacity-50 border border-wedding-gold/40"
                 >
-                  <Send className="w-3.5 h-3.5" />
+                  <Send className="w-3.5 h-3.5 text-wedding-gold-light" />
                   <span>{submitting ? 'Mengirim...' : 'Kirim'}</span>
                 </button>
               </form>
+            </AnimateReveal>
 
-              {/* Divider */}
-              <div className="h-[1px] w-full bg-stone-200 mb-4" />
+            {/* Divider */}
+            <div className="h-[1px] w-full bg-wedding-gold/30 mb-4" />
 
-              {/* Wishes List (Video 00:56 - 00:57) */}
-              <div className="space-y-3 text-left">
-                {loading ? (
-                  <p className="text-center text-xs text-stone-500 py-6">
-                    Memuat ucapan...
-                  </p>
-                ) : wishes.length === 0 ? (
-                  <p className="text-center text-xs text-stone-500 py-6">
-                    Jadilah yang pertama memberikan ucapan &amp; doa.
-                  </p>
-                ) : (
-                  paginatedWishes.map((item) => (
-                    <div
-                      key={item.id}
-                      className="bg-white rounded-2xl p-4 border border-stone-200/80 shadow-sm"
-                    >
+            {/* Wishes List (Video 00:56 - 00:57) */}
+            <div className="space-y-3 text-left">
+              {loading ? (
+                <p className="text-center text-xs text-stone-500 py-6">
+                  Memuat ucapan...
+                </p>
+              ) : wishes.length === 0 ? (
+                <p className="text-center text-xs text-stone-500 py-6">
+                  Jadilah yang pertama memberikan ucapan &amp; doa.
+                </p>
+              ) : (
+                paginatedWishes.map((item, idx) => (
+                  <AnimateReveal
+                    key={item.id}
+                    variant="zoom"
+                    scale={0.3}
+                    delay={idx * 0.06}
+                    duration={0.85}
+                  >
+                    <div className="bg-[#fffdf9] rounded-2xl p-4 border border-wedding-gold/40 shadow-sm">
                       <div className="flex items-center flex-wrap gap-2 mb-1">
-                        <h4 className="font-sans text-xs sm:text-sm font-bold text-wedding-blue-dark">
+                        <h4 className="font-sans text-xs sm:text-sm font-bold text-wedding-blue">
                           {item.name}
                         </h4>
 
@@ -383,52 +391,41 @@ export default function RsvpSection() {
                         </button>
                       </div>
                     </div>
-                  ))
-                )}
-              </div>
-
-              {/* Numbered Pagination (← 1 2 3 →) */}
-              {totalPages > 1 && (
-                <div className="mt-5 flex items-center justify-center gap-1.5 text-xs">
-                  <button
-                    type="button"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    className="p-1.5 rounded-lg text-stone-600 hover:bg-stone-100 disabled:opacity-40"
-                    aria-label="Halaman sebelumnya"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <button
-                      type="button"
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`w-7 h-7 rounded-lg font-semibold transition-all ${
-                        currentPage === page
-                          ? 'bg-wedding-blue text-white shadow-sm'
-                          : 'text-stone-600 hover:bg-stone-100'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-
-                  <button
-                    type="button"
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                    className="p-1.5 rounded-lg text-stone-600 hover:bg-stone-100 disabled:opacity-40"
-                    aria-label="Halaman berikutnya"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
+                  </AnimateReveal>
+                ))
               )}
             </div>
+
+            {/* Numbered Pagination (← 1 / 3 →) */}
+            {totalPages > 1 && (
+              <div className="mt-5 flex items-center justify-center gap-2 text-xs">
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className="p-1.5 rounded-lg text-stone-700 hover:bg-wedding-blue-soft disabled:opacity-40"
+                  aria-label="Halaman sebelumnya"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                <span className="font-serif font-semibold text-stone-700 px-2">
+                  {currentPage} / {totalPages}
+                </span>
+
+                <button
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  className="p-1.5 rounded-lg text-stone-700 hover:bg-wedding-blue-soft disabled:opacity-40"
+                  aria-label="Halaman berikutnya"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
-        </AnimateReveal>
+        </div>
       </div>
     </section>
   );

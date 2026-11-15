@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ZoomIn } from 'lucide-react';
 import { weddingData } from '@/data/weddingData';
-import { CornerFloral } from './FloralOrnaments';
+import { CornerFloral, BackgroundWatermark } from './FloralOrnaments';
 import AnimateReveal from './AnimateReveal';
 
 export default function GallerySection() {
@@ -32,13 +32,14 @@ export default function GallerySection() {
       id="gallery"
       className="py-16 px-6 ivory-bg text-stone-800 relative z-10 overflow-hidden"
     >
-      <CornerFloral position="top-left" className="opacity-70" />
-      <CornerFloral position="top-right" className="opacity-70" />
+      <CornerFloral position="top-left" className="opacity-75" />
+      <CornerFloral position="top-right" className="opacity-75" />
+      <BackgroundWatermark />
 
       <div className="max-w-md mx-auto text-center relative z-10">
         {/* Title: Galeri Foto (Video 00:50 - 00:53) */}
-        <AnimateReveal y={25} duration={0.7} className="mb-8">
-          <h2 className="font-script text-4xl sm:text-5xl text-wedding-gold-dark mb-2">
+        <AnimateReveal variant="zoom" scale={0.2} duration={0.95} className="mb-8">
+          <h2 className="font-script text-4xl sm:text-5xl text-wedding-blue mb-2">
             Galeri Foto
           </h2>
           <p className="font-serif italic text-xs sm:text-sm text-stone-600 max-w-xs mx-auto leading-relaxed">
@@ -51,15 +52,15 @@ export default function GallerySection() {
           {gallery.map((item, idx) => (
             <AnimateReveal
               key={item.id}
-              y={25}
-              delay={(idx % 4) * 0.07}
-              duration={0.6}
-              scale={0.96}
+              variant="zoom"
+              scale={0.3}
+              delay={(idx % 2) * 0.08}
+              duration={0.9}
               className={item.span === 'col-span-2' ? 'col-span-2' : 'col-span-1'}
             >
               <div
                 onClick={() => setSelectedImage(item)}
-                className={`relative rounded-2xl overflow-hidden cursor-pointer group shadow-md bg-stone-200 border-2 border-white ring-1 ring-wedding-gold/30 transition-all duration-300 ${
+                className={`relative rounded-2xl overflow-hidden cursor-pointer group shadow-md bg-stone-200 border-2 border-[#fffdf9] ring-1 ring-wedding-gold/40 transition-all duration-300 ${
                   item.span === 'col-span-2' ? 'h-52 sm:h-60' : 'h-44 sm:h-48'
                 }`}
               >
@@ -69,7 +70,7 @@ export default function GallerySection() {
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-wedding-blue-dark/35 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-3 text-white text-center">
+                <div className="absolute inset-0 bg-wedding-blue-dark/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-3 text-white text-center">
                   <div className="w-9 h-9 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center mb-1 border border-white/50">
                     <ZoomIn className="w-4 h-4 text-white" />
                   </div>
@@ -98,12 +99,12 @@ export default function GallerySection() {
               <X className="w-5 h-5" />
             </button>
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.85, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              exit={{ scale: 0.85, opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="max-w-lg w-full rounded-2xl overflow-hidden bg-white shadow-2xl border-2 border-wedding-gold/40"
+              className="max-w-lg w-full rounded-2xl overflow-hidden bg-[#fbf5ea] shadow-2xl border-2 border-wedding-gold/50"
             >
               <div className="relative bg-stone-950">
                 <img
@@ -112,11 +113,11 @@ export default function GallerySection() {
                   className="w-full max-h-[75vh] object-contain mx-auto"
                 />
               </div>
-              <div className="p-3.5 bg-[#fcfbf9] text-center flex items-center justify-between px-5">
+              <div className="p-3.5 bg-[#fbf5ea] text-center flex items-center justify-between px-5">
                 <p className="text-xs text-stone-700 font-medium">
                   {selectedImage.caption}
                 </p>
-                <span className="text-[10px] text-wedding-blue-dark uppercase tracking-wider font-bold">
+                <span className="text-[10px] text-wedding-blue uppercase tracking-wider font-bold">
                   Foto {selectedImage.id} / {gallery.length}
                 </span>
               </div>

@@ -3,38 +3,43 @@
 import { motion } from 'framer-motion';
 
 /**
- * AnimateReveal — Hardware-Accelerated Scroll Animation matching the Video Reference
+ * AnimateReveal — Animasi Scroll Persis Seperti Video Referensi
  *
- * Mendukung animasi Zoom-In dramatis (scale 0.35 -> 1), Slide-Left, Slide-Right, dan Slide-Up
- * yang selalu aktif saat di-scroll ke bawah maupun ke atas (once: false).
+ * Setiap elemen masuk dengan efek Zoom-In dari kecil (scale: 0.18 -> 1.0)
+ * atau Slide menyilang (kanan/kiri) saat masuk ke layar, dan aktif berulang
+ * setiap kali di-scroll ke atas maupun ke bawah (once: false).
  */
 export default function AnimateReveal({
   children,
   delay = 0,
-  duration = 0.85,
-  y = 35,
+  duration = 1.0,
+  y = 32,
   x = 0,
-  scale = 0.45,
+  scale = 0.2,
   ease,
-  once = false, // Continuous animation saat scroll atas/bawah
-  variant = 'zoom', // Default 'zoom' seperti di video referensi
-  amount = 0.15,
-  margin = '0px 0px -40px 0px',
+  once = false,
+  variant = 'zoom',
+  amount = 0.2,
+  margin = '0px 0px -10% 0px',
   className = '',
 }) {
-  const naturalEase = ease || [0.22, 1, 0.36, 1];
+  const smoothZoomEase = ease || [0.16, 1, 0.3, 1];
 
   const getInitial = () => {
     switch (variant) {
       case 'left':
-        return { opacity: 0, x: -Math.abs(x || 70), y: 0, scale: 0.88 };
+        return { opacity: 0, x: -Math.abs(x || 85), y: 0, scale: 0.65 };
       case 'right':
-        return { opacity: 0, x: Math.abs(x || 70), y: 0, scale: 0.88 };
+        return { opacity: 0, x: Math.abs(x || 85), y: 0, scale: 0.65 };
       case 'down':
-        return { opacity: 0, y: -Math.abs(y || 35), x: 0, scale: 0.9 };
+        return { opacity: 0, y: -Math.abs(y || 40), x: 0, scale: 0.7 };
       case 'zoom':
       case 'scale':
-        return { opacity: 0, scale: scale < 1 ? scale : 0.4, y: 18 };
+        return {
+          opacity: 0,
+          scale: scale < 1 ? scale : 0.2,
+          y: 22,
+        };
       case 'fade':
         return { opacity: 0 };
       case 'up':
@@ -43,7 +48,7 @@ export default function AnimateReveal({
           opacity: 0,
           y: Math.abs(y || 35),
           x: x || 0,
-          scale: scale < 1 ? scale : 0.75,
+          scale: scale < 1 ? scale : 0.3,
         };
     }
   };
@@ -60,7 +65,7 @@ export default function AnimateReveal({
       transition={{
         duration,
         delay,
-        ease: naturalEase,
+        ease: smoothZoomEase,
       }}
       style={{ willChange: 'transform, opacity' }}
       className={className}

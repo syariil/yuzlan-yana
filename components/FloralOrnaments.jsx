@@ -4,29 +4,36 @@ import { motion } from 'framer-motion';
 
 /**
  * 1. BottomFloralBouquet
- * Rangkaian bunga peony biru pastel, mawar krem, dan dedaunan emas realistis (watercolor)
- * di bagian bawah Cover, Hero, Card Acara, dan Footer.
+ * Rangkaian bunga peony maroon, mawar krem, dan dedaunan emas realistis (watercolor)
+ * dengan animasi goyangan angin lembut (continuous sway) persis seperti di video.
  */
 export function BottomFloralBouquet({ className = '' }) {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 35, scale: 0.94 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: false, amount: 0.15 }}
+      transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
       className={`w-full overflow-hidden pointer-events-none select-none leading-none relative ${className}`}
     >
       <motion.img
         src="/images/ornaments/floral-bottom.png"
-        alt="Blue Peony and Cream Rose Bouquet"
-        initial={{ scale: 1.01, y: 4 }}
-        animate={{ scale: [1.01, 1.04, 1.01], y: [4, 0, 4] }}
-        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="w-full h-auto block object-cover object-bottom"
+        alt="Maroon Peony and Cream Rose Bouquet"
+        animate={{
+          scale: [1.01, 1.045, 1.01],
+          rotate: [-0.8, 0.8, -0.8],
+          y: [3, -2, 3],
+        }}
+        transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
+        className="w-full h-auto block object-cover object-bottom origin-bottom"
       />
-    </div>
+    </motion.div>
   );
 }
 
 /**
  * 2. CastleIllustration
- * Ilustrasi Watercolor Kastil Dongeng (Fairytale Castle) realistis dengan pepohonan berkabut
+ * Ilustrasi Watercolor Kastil Dongeng (Fairytale Castle) bernuansa Maroon, Cream & Gold
  */
 export function CastleIllustration({ className = '', size = 'large' }) {
   const isSmall = size === 'small';
@@ -46,12 +53,12 @@ export function CastleIllustration({ className = '', size = 'large' }) {
           alt="Fairytale Castle Illustration"
           className="w-full h-auto block mx-auto drop-shadow-sm"
         />
-        {/* Soft bottom mist fade so the castle base blends seamlessly into the ivory paper */}
+        {/* Soft warm cream mist fade at base */}
         <div
           className="absolute inset-x-0 bottom-0 h-10 pointer-events-none"
           style={{
             background:
-              'linear-gradient(to top, rgba(252,251,249,0.95) 0%, rgba(252,251,249,0) 100%)',
+              'linear-gradient(to top, rgba(251,245,234,0.96) 0%, rgba(251,245,234,0) 100%)',
           }}
         />
       </div>
@@ -60,15 +67,92 @@ export function CastleIllustration({ className = '', size = 'large' }) {
 }
 
 /**
- * 3. GoldOvalPortrait
+ * 3. BackgroundWatermark
+ * Siluet samar istana & pepohonan berkabut di latar kertas cream (seperti di video detik 00:05, 00:35, 00:42, 00:59)
+ */
+export function BackgroundWatermark({ className = '' }) {
+  return (
+    <div
+      className={`absolute inset-x-0 bottom-0 pointer-events-none select-none overflow-hidden z-0 flex justify-center ${className}`}
+    >
+      <img
+        src="/images/ornaments/castle.png"
+        alt=""
+        className="w-full max-w-[420px] h-auto object-contain opacity-[0.11] scale-110 blur-[0.5px]"
+      />
+    </div>
+  );
+}
+
+/**
+ * 4. SideGoldFoliage
+ * Dedaunan palem/botani emas yang melambai di sisi kiri & kanan layar Hero (seperti di video detik 00:11 & 00:27)
+ */
+export function SideGoldFoliage() {
+  return (
+    <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-10">
+      {/* Left Swaying Gold Palm/Foliage */}
+      <motion.div
+        animate={{ rotate: [-3, 3.5, -3], x: [-2, 2, -2] }}
+        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-[22%] -left-8 w-28 sm:w-32 origin-bottom-left opacity-85"
+      >
+        <svg viewBox="0 0 140 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="goldPalmL" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#e8cf9c" />
+              <stop offset="50%" stopColor="#c5a059" />
+              <stop offset="100%" stopColor="#8f6b32" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M0 180 Q35 120 85 85 M0 180 Q45 135 110 115 M0 180 Q50 155 115 145 M0 180 Q30 100 65 55 M0 180 Q40 165 95 175"
+            stroke="url(#goldPalmL)"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M25 135 Q55 95 95 75 Q60 115 25 135 Z M35 145 Q75 120 120 110 Q75 138 35 145 Z M30 160 Q75 148 122 145 Q75 162 30 160 Z M18 122 Q42 75 72 48 Q48 92 18 122 Z"
+            fill="url(#goldPalmL)"
+            opacity="0.8"
+          />
+        </svg>
+      </motion.div>
+
+      {/* Right Swaying Gold Palm/Foliage */}
+      <motion.div
+        animate={{ rotate: [3, -3.5, 3], x: [2, -2, 2] }}
+        transition={{ duration: 5.8, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-[22%] -right-8 w-28 sm:w-32 origin-bottom-right opacity-85 scale-x-[-1]"
+      >
+        <svg viewBox="0 0 140 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M0 180 Q35 120 85 85 M0 180 Q45 135 110 115 M0 180 Q50 155 115 145 M0 180 Q30 100 65 55 M0 180 Q40 165 95 175"
+            stroke="url(#goldPalmL)"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M25 135 Q55 95 95 75 Q60 115 25 135 Z M35 145 Q75 120 120 110 Q75 138 35 145 Z M30 160 Q75 148 122 145 Q75 162 30 160 Z M18 122 Q42 75 72 48 Q48 92 18 122 Z"
+            fill="url(#goldPalmL)"
+            opacity="0.8"
+          />
+        </svg>
+      </motion.div>
+    </div>
+  );
+}
+
+/**
+ * 5. GoldOvalPortrait
  * Bingkai foto oval emas murni (untuk Cover & Footer seperti di video detik 00:07 & 00:59)
  */
 export function GoldOvalPortrait({ src, alt, className = '' }) {
   return (
     <div
-      className={`relative w-44 h-60 sm:w-48 sm:h-64 rounded-full p-[6px] bg-gradient-to-b from-[#f5e3be] via-[#c8a464] to-[#8f6b32] shadow-[0_14px_30px_-6px_rgba(74,103,133,0.28)] ${className}`}
+      className={`relative w-44 h-60 sm:w-48 sm:h-64 rounded-full p-[6px] bg-gradient-to-b from-[#f5e3be] via-[#c8a464] to-[#8f6b32] shadow-[0_14px_30px_-6px_rgba(115,28,46,0.28)] ${className}`}
     >
-      <div className="w-full h-full rounded-full p-1 bg-[#fcfbf9] overflow-hidden relative border border-[#d2ae6d]/70">
+      <div className="w-full h-full rounded-full p-1 bg-[#fbf5ea] overflow-hidden relative border border-[#d2ae6d]/70">
         <img
           src={src}
           alt={alt}
@@ -80,8 +164,8 @@ export function GoldOvalPortrait({ src, alt, className = '' }) {
 }
 
 /**
- * 4. OvalFloralFrame
- * Bingkai foto oval emas dengan rangkaian bunga peony biru & mawar krem watercolor realistis
+ * 6. OvalFloralFrame
+ * Bingkai foto oval emas dengan rangkaian bunga peony maroon & mawar krem watercolor realistis
  * yang memeluk lengkungan bingkai secara presisi:
  * - flowerSide="left"  -> menggunakan floral-side-left.png di lengkung kiri-bawah (untuk Mempelai Wanita)
  * - flowerSide="right" -> menggunakan floral-side.png di lengkung kanan-bawah (untuk Mempelai Pria)
@@ -90,9 +174,9 @@ export function OvalFloralFrame({ src, alt, flowerSide = 'left' }) {
   const isLeftFlower = flowerSide === 'left';
   return (
     <div className="relative inline-block my-4">
-      {/* Ornate Metallic Gold Outer Oval Frame (208px x 272px) */}
-      <div className="relative w-52 h-[272px] sm:w-56 sm:h-[292px] rounded-full p-[6px] bg-gradient-to-b from-[#f5e3be] via-[#c8a464] to-[#8f6b32] shadow-[0_14px_30px_-6px_rgba(74,103,133,0.28)]">
-        <div className="w-full h-full rounded-full p-1 bg-[#fcfbf9] overflow-hidden relative border border-[#d2ae6d]/70">
+      {/* Ornate Metallic Gold Outer Oval Frame */}
+      <div className="relative w-52 h-[272px] sm:w-56 sm:h-[292px] rounded-full p-[6px] bg-gradient-to-b from-[#f5e3be] via-[#c8a464] to-[#8f6b32] shadow-[0_14px_30px_-6px_rgba(115,28,46,0.28)]">
+        <div className="w-full h-full rounded-full p-1 bg-[#fbf5ea] overflow-hidden relative border border-[#d2ae6d]/70">
           <img
             src={src}
             alt={alt}
@@ -114,8 +198,11 @@ export function OvalFloralFrame({ src, alt, flowerSide = 'left' }) {
               : '/images/ornaments/floral-side.png'
           }
           alt="Floral Wreath Ornament"
-          animate={{ rotate: isLeftFlower ? [-1.2, 1.2, -1.2] : [1.2, -1.2, 1.2] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{
+            rotate: isLeftFlower ? [-1.8, 1.8, -1.8] : [1.8, -1.8, 1.8],
+            scale: [1, 1.03, 1],
+          }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
           className="w-full h-auto block drop-shadow-md"
         />
       </div>
@@ -124,8 +211,8 @@ export function OvalFloralFrame({ src, alt, flowerSide = 'left' }) {
 }
 
 /**
- * 5. CornerFloral
- * Ornamen bunga sudut kartu watercolor realistis
+ * 7. CornerFloral
+ * Ornamen bunga sudut kartu watercolor dengan animasi goyangan lembut
  */
 export function CornerFloral({ position = 'top-right', className = '' }) {
   const posClasses = {
@@ -139,17 +226,19 @@ export function CornerFloral({ position = 'top-right', className = '' }) {
     <div
       className={`absolute pointer-events-none select-none z-0 ${posClasses[position]} ${className}`}
     >
-      <img
+      <motion.img
         src="/images/ornaments/floral-corner.png"
         alt=""
-        className="w-32 sm:w-36 h-auto block"
+        animate={{ scale: [1, 1.04, 1], rotate: [-1.5, 1.5, -1.5] }}
+        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+        className="w-32 sm:w-36 h-auto block origin-top-left"
       />
     </div>
   );
 }
 
 /**
- * 6. FlyingBirds
+ * 8. FlyingBirds
  * Animasi siluet burung-burung terbang melintasi langit kastil
  */
 export function FlyingBirds() {
@@ -158,13 +247,13 @@ export function FlyingBirds() {
       <motion.div
         initial={{ x: '-12%', y: 24, opacity: 0 }}
         animate={{ x: '112%', y: -16, opacity: [0, 0.85, 0.85, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 10.5, repeat: Infinity, ease: 'linear' }}
         className="flex gap-4 items-center"
       >
         <svg width="18" height="12" viewBox="0 0 24 14" fill="none">
           <path
             d="M1 9 Q7 1 12 7 Q17 1 23 9 Q17 5 12 10 Q7 5 1 9 Z"
-            fill="#3d5269"
+            fill="#52111f"
           />
         </svg>
         <svg
@@ -176,7 +265,7 @@ export function FlyingBirds() {
         >
           <path
             d="M1 9 Q7 1 12 7 Q17 1 23 9 Q17 5 12 10 Q7 5 1 9 Z"
-            fill="#3d5269"
+            fill="#52111f"
           />
         </svg>
         <svg
@@ -188,7 +277,7 @@ export function FlyingBirds() {
         >
           <path
             d="M1 9 Q7 1 12 7 Q17 1 23 9 Q17 5 12 10 Q7 5 1 9 Z"
-            fill="#3d5269"
+            fill="#52111f"
           />
         </svg>
       </motion.div>
@@ -197,7 +286,7 @@ export function FlyingBirds() {
 }
 
 /**
- * 7. RomanArchway
+ * 9. RomanArchway
  * Gerbang Lengkung Istana Klasik dengan ukiran daun emas (seperti di video detik 00:15 - 00:22)
  */
 export function RomanArchway({ className = '' }) {
@@ -215,7 +304,7 @@ export function RomanArchway({ className = '' }) {
         <defs>
           <linearGradient id="pillarStone" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#d5c7b0" />
-            <stop offset="30%" stopColor="#f6f0e4" />
+            <stop offset="30%" stopColor="#fbf5ea" />
             <stop offset="70%" stopColor="#e8decb" />
             <stop offset="100%" stopColor="#c2b197" />
           </linearGradient>
@@ -237,7 +326,7 @@ export function RomanArchway({ className = '' }) {
         {/* Inner Arch Moldings */}
         <path
           d="M85 750 L85 270 A165 165 0 0 1 415 270 L415 750"
-          stroke="#c5a880"
+          stroke="#c5a059"
           strokeWidth="3"
           fill="none"
         />
@@ -255,7 +344,6 @@ export function RomanArchway({ className = '' }) {
         <line x1="38" y1="288" x2="38" y2="740" stroke="#b59b72" strokeWidth="1.2" opacity="0.6" />
         <line x1="55" y1="288" x2="55" y2="740" stroke="#b59b72" strokeWidth="1.2" opacity="0.6" />
         <line x1="72" y1="288" x2="72" y2="740" stroke="#b59b72" strokeWidth="1.2" opacity="0.6" />
-        {/* Left Capital */}
         <rect
           x="14"
           y="252"
@@ -280,7 +368,6 @@ export function RomanArchway({ className = '' }) {
         <line x1="428" y1="288" x2="428" y2="740" stroke="#b59b72" strokeWidth="1.2" opacity="0.6" />
         <line x1="445" y1="288" x2="445" y2="740" stroke="#b59b72" strokeWidth="1.2" opacity="0.6" />
         <line x1="462" y1="288" x2="462" y2="740" stroke="#b59b72" strokeWidth="1.2" opacity="0.6" />
-        {/* Right Capital */}
         <rect
           x="404"
           y="252"
@@ -292,18 +379,16 @@ export function RomanArchway({ className = '' }) {
           strokeWidth="1.5"
         />
 
-        {/* Golden Botanical Leaves Wrapping the Archway & Pillars (Video 00:15 - 00:21) */}
+        {/* Golden Botanical Leaves Wrapping the Archway & Pillars */}
         <g fill="url(#goldVine)" stroke="#8f6b32" strokeWidth="0.9">
           <path d="M90 195 Q115 145 155 130 Q135 175 90 195 Z" />
           <path d="M145 125 Q185 80 230 72 Q200 115 145 125 Z" />
           <path d="M250 52 Q272 20 250 8 Q228 20 250 52 Z" />
           <path d="M355 125 Q315 80 270 72 Q300 115 355 125 Z" />
           <path d="M410 195 Q385 145 345 130 Q365 175 410 195 Z" />
-          {/* Left Pillar Vines */}
           <path d="M28 350 Q70 320 86 295 Q62 302 28 350 Z" />
           <path d="M84 425 Q40 395 25 370 Q55 382 84 425 Z" />
           <path d="M30 500 Q72 470 86 445 Q60 455 30 500 Z" />
-          {/* Right Pillar Vines */}
           <path d="M472 350 Q430 320 414 295 Q438 302 472 350 Z" />
           <path d="M416 425 Q460 395 475 370 Q445 382 416 425 Z" />
           <path d="M470 500 Q428 470 414 445 Q440 455 470 500 Z" />

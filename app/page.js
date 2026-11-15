@@ -41,7 +41,7 @@ export default function WeddingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#dfe8f2] text-stone-800 overflow-x-hidden">
+    <main className="min-h-screen bg-[#4a121f] text-stone-800 overflow-x-hidden">
       {/* 0. Preloader Screen — Mendownload semua data & foto terlebih dahulu */}
       {isLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
 
@@ -54,53 +54,53 @@ export default function WeddingPage() {
       {/* 3. Scroll Progress Bar at Top */}
       {isInvitationOpen && <ScrollProgressBar />}
 
-      {/* 4. Falling Blue & Cream Petals — tampil setelah undangan dibuka */}
+      {/* 4. Falling Maroon & Cream Petals — tampil setelah undangan dibuka */}
       <FallingPetals count={10} active={isInvitationOpen} />
 
       {/* Main Content (Mobile-First Container following exact Video Reference flow) */}
       <div className="w-full max-w-md mx-auto shadow-2xl relative ivory-bg min-h-screen">
         {/* Slide 1: Hero Castle & Gate Opening (Video 00:10 - 00:29) */}
-        <div className="snap-section justify-between">
+        <div className="snap-section">
           <HeroSection isInvitationOpen={isInvitationOpen} />
         </div>
 
         {/* Slide 2: With Love, QS Ar-Rum 21 & Couple Oval Floral Frames (Video 00:30 - 00:39) */}
-        <div className="snap-section justify-center">
+        <div className="snap-section">
           <CoupleSection />
         </div>
 
-        {/* Slide 3: Save The Date Banner, Countdown & White Arch Card on Dusty Blue (Video 00:40 - 00:44) */}
-        <div className="snap-section justify-center">
+        {/* Slide 3: Save The Date Banner, Countdown & Cream Arch Card on Maroon (Video 00:40 - 00:44) */}
+        <div className="snap-section">
           <EventsSection />
         </div>
 
-        {/* Slide 4: Love Story on Ivory Floral Frame (Video 00:45 - 00:49) */}
-        <div className="snap-section justify-center">
+        {/* Slide 4: Love Story on Cream Floral Frame (Video 00:45 - 00:49) */}
+        <div className="snap-section">
           <StorySection />
         </div>
 
         {/* Slide 5: Galeri Foto 2-Column Rounded Grid & Lightbox (Video 00:50 - 00:53) */}
-        <div className="snap-section justify-center">
+        <div className="snap-section">
           <GallerySection />
         </div>
 
-        {/* Slide 6: Amplop Digital White Card on Dusty Blue (Video 00:54) */}
-        <div className="snap-section justify-center">
+        {/* Slide 6: Amplop Digital Cream Card on Maroon (Video 00:54) */}
+        <div className="snap-section">
           <GiftSection />
         </div>
 
-        {/* Slide 7: Doa Pengantin White Card on Dusty Blue */}
-        <div className="snap-section justify-center">
+        {/* Slide 7: Doa Pengantin Cream Card on Maroon */}
+        <div className="snap-section">
           <PrayerSection />
         </div>
 
-        {/* Slide 8: Ucapan & Doa (RSVP + Paginated Wishes) on Dusty Blue (Video 00:55 - 00:57) */}
-        <div className="snap-section justify-center">
+        {/* Slide 8: Ucapan & Doa (RSVP + Paginated Wishes) on Maroon (Video 00:55 - 00:57) */}
+        <div className="snap-section">
           <RsvpSection />
         </div>
 
-        {/* Slide 9: Closing Oval Frame, Bouquet & Blue Credit Bar (Video 00:58 - 01:02) */}
-        <div className="snap-section justify-between">
+        {/* Slide 9: Closing Oval Frame, Bouquet & Maroon Credit Bar (Video 00:58 - 01:02) */}
+        <div className="snap-section">
           <FooterSection />
         </div>
       </div>
