@@ -33,9 +33,7 @@ _Assalamu'alaikum Warahmatullahi Wabarakatuh_
 
 Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i, teman sekaligus sahabat, untuk menghadiri acara pernikahan kami :
 
-*${weddingData.bride.fullName.trim()}*
-&
-*${weddingData.groom.fullName.trim()}*
+*${weddingData.bride.fullName.trim()}* & *${weddingData.groom.fullName.trim()}*
 
 Berikut link undangan kami, untuk info lengkap dari acara bisa kunjungi :
 
@@ -85,7 +83,7 @@ Kehadiran dan doa restumu sangat berarti bagi kami. Sampai ketemu di acara nanti
 export default function GuestGeneratorPage() {
   const [guestName, setGuestName] = useState('');
   const [guestPhone, setGuestPhone] = useState('');
-  const [baseUrl, setBaseUrl] = useState('http://localhost:3000');
+  const [baseUrl, setBaseUrl] = useState('https://yana-yuzlan.vercel.app/');
   const [templateKey, setTemplateKey] = useState('islami');
   const [captionTemplate, setCaptionTemplate] = useState(DEFAULT_TEMPLATES.islami);
   const [copiedType, setCopiedType] = useState(null); // 'caption' | 'link' | null
