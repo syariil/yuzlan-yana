@@ -167,45 +167,21 @@ export default function GuestGeneratorPage() {
     return digits;
   };
 
-  // Buat URL WhatsApp resmi (wa.me)
-  const getWhatsAppUrl = (targetName = guestName) => {
+  // Handler klik Share ke WhatsApp
+  // Menggunakan <button> + window.location.href (bukan <a href="wa.me"> atau window.open popup)
+  // agar TIDAK disembunyikan oleh AdBlock/Brave Shields (##a[href^="https://wa.me/"])
+  // dan TIDAK diblokir oleh filter anti-popup (||api.whatsapp.com/send*$popup) di server deployment.
+  const shareToWhatsApp = (targetName = guestName) => {
     const nameToUse =
       typeof targetName === 'string' && targetName.trim()
         ? targetName.trim()
         : 'Tamu Undangan';
     const message = generateFinalMessage(nameToUse);
     const encodedMessage = encodeURIComponent(message);
-    return `https://wa.me/?text=${encodedMessage}`;
-  };
-
-  // Handler klik Share ke WhatsApp (kompatibel di Desktop, HP Android/iPhone & In-App Browser Vercel)
-  const handleWhatsAppShare = (e, targetName = guestName) => {
-    const nameToUse =
-      typeof targetName === 'string' && targetName.trim()
-        ? targetName.trim()
-        : 'Tamu Undangan';
-    const message = generateFinalMessage(nameToUse);
-    const encodedMessage = encodeURIComponent(message);
-    const waWebUrl = `https://wa.me/?text=${encodedMessage}`;
-    const waAppUrl = `whatsapp://send?text=${encodedMessage}`;
+    const waUrl = `https://api.whatsapp.com/send?text=${encodedMessage}`;
 
     if (typeof window !== 'undefined') {
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent || ''
-      );
-
-      if (isMobile) {
-        // Di HP / In-App Browser (WA/IG/Chrome Mobile/Safari), window.open('_blank') sering diblokir.
-        // Gunakan deep link whatsapp:// dengan fallback ke https://wa.me/
-        e.preventDefault();
-        window.location.href = waAppUrl;
-        setTimeout(() => {
-          if (document.visibilityState === 'visible') {
-            window.location.href = waWebUrl;
-          }
-        }, 1200);
-      }
-      // Di Desktop, biarkan tag <a href={waWebUrl} target="_blank"> berjalan alami agar tidak diblokir popup blocker
+      window.location.href = waUrl;
     }
   };
 
@@ -457,16 +433,14 @@ export default function GuestGeneratorPage() {
 
               {/* Action Buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4">
-                <a
-                  href={getWhatsAppUrl(guestName)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => handleWhatsAppShare(e, guestName)}
+                <button
+                  type="button"
+                  onClick={() => shareToWhatsApp(guestName)}
                   className="w-full py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
                 >
                   <MessageCircle className="w-4 h-4 fill-current" />
                   <span>Share ke WhatsApp</span>
-                </a>
+                </button>
 
                 <button
                   type="button"
@@ -534,16 +508,14 @@ export default function GuestGeneratorPage() {
                       </div>
 
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <a
-                          href={getWhatsAppUrl(item.name)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => handleWhatsAppShare(e, item.name)}
+                        <button
+                          type="button"
+                          onClick={() => shareToWhatsApp(item.name)}
                           className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold flex items-center gap-1 shadow-sm"
                         >
                           <Send className="w-3 h-3" />
                           <span>Share WA</span>
-                        </a>
+                        </button>
 
                         <button
                           type="button"
