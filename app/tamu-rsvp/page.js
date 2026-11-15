@@ -163,15 +163,12 @@ export default function GuestGeneratorPage() {
   };
 
   // Langsung share ke WhatsApp
-  const shareToWhatsApp = (targetName = guestName, targetPhone = guestPhone) => {
+  const shareToWhatsApp = (targetName = guestName) => {
     const nameToUse = targetName.trim() || 'Tamu Undangan';
     const message = generateFinalMessage(nameToUse);
     const encodedMessage = encodeURIComponent(message);
-    const cleanPhone = formatPhone(targetPhone);
 
-    const waUrl = cleanPhone
-      ? `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodedMessage}`
-      : `https://api.whatsapp.com/send?text=${encodedMessage}`;
+    const waUrl = `https://api.whatsapp.com/send?text=${encodedMessage}`;
 
     window.open(waUrl, '_blank');
   };
@@ -277,21 +274,6 @@ export default function GuestGeneratorPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
-                    Nomor WhatsApp Tamu{' '}
-                    <span className="text-stone-400 font-normal">
-                      (Opsional — kosongkan jika ingin pilih kontak langsung di WA)
-                    </span>
-                  </label>
-                  <input
-                    type="tel"
-                    value={guestPhone}
-                    onChange={(e) => setGuestPhone(e.target.value)}
-                    placeholder="Contoh: 081234567890"
-                    className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm bg-[#fbf5ea] border border-wedding-gold/40 focus:outline-none focus:ring-2 focus:ring-wedding-blue text-stone-800"
-                  />
-                </div>
 
                 {/* Generated Link Preview */}
                 <div className="p-3 rounded-xl bg-[#fbf5ea] border border-dashed border-wedding-gold/60 flex items-center justify-between gap-2">
