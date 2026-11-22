@@ -14,7 +14,8 @@ export const weddingData = {
   groom: {
     fullName: "Ld. Ahmad Yuzlan Sarifudin",
     nickname: "Yuzlan",
-    parents: "Anak pertama dari 2 bersaudara dari Bapak La Ode Sarifudin & Ibu Wa Ode Darnia",
+    parents:
+      "Anak pertama dari 2 bersaudara dari Bapak La Ode Sarifudin & Ibu Wa Ode Darnia",
     instagram: "https://www.instagram.com/odealan99",
     photo: "/images/Yuzlan.webp",
   },
@@ -65,7 +66,8 @@ export const weddingData = {
     {
       title: "PERNIKAHAN",
       date: "08 DESEMBER 2026",
-      description: "Pada tanggal 08 Desember 2026, Yuzlan dan Yana insya Allah resmi menjadi sepasang suami istri. Dengan semua doa restu dari keluarga dan teman-teman, kami siap untuk menempuh hidup bersama dan menjalankan ibadah paling indah ini.",
+      description:
+        "Pada tanggal 08 Desember 2026, Yuzlan dan Yana insya Allah resmi menjadi sepasang suami istri. Dengan semua doa restu dari keluarga dan teman-teman, kami siap untuk menempuh hidup bersama dan menjalankan ibadah paling indah ini.",
     },
   ],
 
@@ -77,14 +79,15 @@ export const weddingData = {
       date: "SELASA, 08 DESEMBER 2026",
       time: "08.00 WITA",
       venue: "KEDIAMAN MEMPELAI WANITA",
-      address: " jln LAODE MANARFAH, kel. Baadia, kec. Murhum (sebelum SDN 2 Baadia) Kediaman mempelai wanita.",
+      address:
+        " jln LAODE MANARFAH, kel. Baadia, kec. Murhum (sebelum SDN 2 Baadia) Kediaman mempelai wanita.",
       mapsUrl: "https://maps.app.goo.gl/nZVttTGg5WyDFvTBA",
     },
     {
       id: "resepsi",
       name: "Resepsi",
       date: "SELASA, 08 DESEMBER 2026",
-      time: "12.00 - Selesai",
+      time: "12.30 - Selesai",
       venue: "GEDUNG ARASALANA",
       address: " Lamangga, Murhum, Kota Bau-Bau, Sulawesi Tenggara",
       mapsUrl: "https://maps.app.goo.gl/bTdxjRjJai5DW1J37",
@@ -256,7 +259,8 @@ export const weddingData = {
 
   // Doa Untuk Pengantin
   prayer: {
-    arabic: "بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ",
+    arabic:
+      "بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ",
     latin: "Barakallahu laka wa baraka 'alaika wa jama'a bainakuma fii khoir",
     translation:
       "Mudah-mudahan Allah memberkahi engkau dalam segala hal (yang baik) dan mempersatukan kamu berdua dalam kebaikan",
@@ -285,4 +289,3 @@ export const weddingData = {
     src: "/audio/music.mp3",
   },
 };
-
